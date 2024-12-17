@@ -1,10 +1,14 @@
-import pyvisa
-print("Hello World !")
+if __name__ == '__main__':
+    main()
 
-rm = pyvisa.ResourceManager()
-rm.list_resources()
+def main():
+    import pyvisa
+    print("Hello World !")
 
-# To be changed for something configurable !
-instr = rm.open_resource("TCPIP0::192.168.1.5::inst0::INSTR")
-print(instr)
-print(instr.query('*IDN?'))
+    rm = pyvisa.ResourceManager()
+    rm.list_resources()
+
+    # To be changed for something configurable !
+    instr = rm.open_resource("TCPIP0::192.168.1.5::inst0::INSTR")
+    print(instr)
+    print(instr.query('*IDN?'))
