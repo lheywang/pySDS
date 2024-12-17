@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "pysds"
+version = "0.1.0"
+description = "A Python package to interract with Siglent SDS Oscilloscpe series"
+authors = ["lheywang <leonard.heywang@gmail.com>"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pyvisa-py = "^0.7.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
