@@ -33,12 +33,11 @@ TRIG_WINDOW
 TRIG_PATTERN  
 
 # Generic
-ALL_STATUS?
-AUTO_CALIBRATE
-BUZZER
-*CAL?
-*CLS 
-CMR?
+-- ALL_STATUS?
+AUTO_CALIBRATE --> Partially available
+-- *CAL?
+-- *CLS 
+-- CMR?
 DATE
 DDR? 
 *ESE
@@ -135,3 +134,6 @@ XY_DISPLAY      --> Read doc
 
 # Counter
 CYMOMETER       --> Read doc
+
+# Misc
+BUZZER

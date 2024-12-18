@@ -9,12 +9,13 @@
 # Python libraries
 import ipaddress
 import tomllib
+from datetime import datetime
 
 # Poetry managed lbraries
 import pyvisa # type: ignore
 
 # Others files
-from channel import SDSChannel
+# from channel import SDSChannel
 
 
 class PySDS:
@@ -104,8 +105,8 @@ class PySDS:
             Returns :
                 None
         """
-        print(f"Device on {self.__ip__} :
-                    Type : {self.model} ")
+
+        print(f"Device on {self.__ip__} : \nType : {self.model} ")
         return
 
     def __str__(self):
@@ -119,9 +120,145 @@ class PySDS:
             Returns :
                 None
         """
-        print(f"Device on {self.__ip__} :
-            Type : {self.model} ")
+
+        print(f"Device on {self.__ip__} : \nType : {self.model} ")
         return
+    
+    def GetAllStatus(self):
+        """
+        PySDS [GetAllStatus] :  Return the status of the STB, ESR, INR, DDR, CMD, EXR and URR Registers.
+
+            Arguments :
+                None
+
+            Returns :
+                List of integers with the values in order
+        """
+
+        # Querry
+        Ret = self.__instr__.query("ALST?")
+
+        # Split comma. Format : ALST STB, Val, ESR..
+        # Get only the usefull values
+        Ret = Ret.strip().split(",")
+        return [int(Ret[1]), 
+                int(Ret[3]), 
+                int(Ret[5]), 
+                int(Ret[7]), 
+                int(Ret[9]), 
+                int(Ret[11]), 
+                int(Ret[13])]
+    
+    def Calibrate(self):
+        """
+        PySDS [Calibrate] : Calibrate the device. 
+                            This is actually the fast one, which does not do a full analog frontend calibration.
+
+        WARNING :   Leaving probes and other elements connected may affect the result. 
+                    Make sure to calibrate the device in proper conditions !
+
+        Arguments : 
+            None
+
+        Returns :
+            Integer : If 0, then calibration was sucessfull.
+        """
+
+        Ret = self.__instr__.query("*CAL?")
+        return int(Ret.strip().split(" ")[1])
+    
+    def ClearStatus(self):
+        """
+        PySDS [ClearStatus] :   Clear the status register
+        
+            Arguments :
+                None
+                
+            Returns :
+                None
+        """
+
+        self.__instr__.write("*CLS")
+        return
+    
+    def ReadCMR(self):
+        """
+        PySDS [ReadCMR] :   Read and clear the CMR register
+        
+            Arguments :
+                None
+                
+            Returns :
+                None
+        """
+
+        Ret = self.__instr__.query("CMR?")
+        return Ret.strip().split(" ")[1]
+    
+    def ReadCMR(self):
+        """
+        PySDS [ReadCMR] :   Read and clear the CMR register
+        
+            Arguments :
+                None
+                
+            Returns :
+                None
+        """
+
+        Ret = self.__instr__.query("CMR?")
+        return Ret.strip().split(" ")[1]
+    
+    def GetDate(self):
+        """
+        PySDS [GetDate] :   Read and return the date stored on the oscilloscope RTC
+
+        Actually, this function does not work, despite that it's presence is stated on the datasheet.
+        
+            Arguments : 
+                None
+                
+            Returns :
+                Python Datetime object
+        """
+
+        Ret = self.__instr__.query("DATE?")
+        Ret = Ret.strip().split(" ")[1:]
+
+        # Why did they express month like that ? Cannot they send the number ?
+        match Ret[1]:
+            case "JAN" :
+                month = 1
+            case "FEB" :
+                month = 2
+            case "MAR" :
+                month = 3
+            case "APR" :
+                month = 4
+            case "MAY" :
+                month = 5
+            case "JUN" :
+                month = 6
+            case "JUL" :
+                month = 7
+            case "AUG" :
+                month = 8
+            case "SEP" :
+                month = 9
+            case "OCT" :
+                month = 10
+            case "NOV" :
+                month = 11
+            case "DEC" :
+                month = 12
+
+        return datetime(Ret[2], month, Ret[0], Ret[3], Ret[4], Ret[5])
+
+
+
+
+    
+
     
 
 

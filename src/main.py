@@ -4,6 +4,8 @@ def main():
     from pySDS import PySDS
     Dev = PySDS("192.168.1.5")
 
+    print(Dev.GetDate())
+
 if __name__ == '__main__':
     main()
 
