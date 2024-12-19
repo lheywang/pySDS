@@ -30,7 +30,8 @@ TRIG_MODE
 TRIG_SELECT
 TRIG_SLOPE
 TRIG_WINDOW
-TRIG_PATTERN  
+TRIG_PATTERN 
+*TRG
 
 # Generic
 -- ALL_STATUS?
@@ -39,24 +40,24 @@ AUTO_CALIBRATE --> Partially available
 -- *CLS 
 -- CMR?
 DATE
-DDR? 
-*ESE
-*ESR?
-EXR? 
-*IDN?
-INR?
+-- DDR? 
+-- *ESE
+-- *ESR?
+-- EXR?
+-- *IDN?
+-- INR?
 LOCK
 MEMORY_SIZE
-*OPC
-*OPT? 
+-- *OPC
+-- *OPT? 
 PANEL_SETUP
-*RCL
+-- *RCL
 RECALL_PANEL
-*RST 
-*SAV
-*SRE 
-*STB?
-*TRG 
+-- *RST 
+-- *SAV
+-- *SRE 
+-- *STB? 
+ 
 
 REF_SET ???     --> Read doc
 
