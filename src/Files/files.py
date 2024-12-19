@@ -6,6 +6,8 @@
 #
 # ============================================================================================================
 
+
 class SiglentFiles:
-    def __init__(self, instr):
+    def __init__(self, instr, baseclass):
         self.__instr__ = instr
+        self.__baseclass__ = baseclass

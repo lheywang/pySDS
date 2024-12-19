@@ -29,6 +29,7 @@ include = [
 [tool.poetry.dependencies]
 python = "^3.12"
 pyvisa-py = "^0.7.2"
+black = "^24.10.0"
 
 
 [tool.poetry.group.test.dependencies]
