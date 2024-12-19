@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "pysds"
+name = "pySDS"
 version = "0.1.0"
 description = "A Python package to interract with Siglent SDS Oscilloscpe series"
 authors = [
