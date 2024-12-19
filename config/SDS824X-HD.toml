@@ -1,0 +1,54 @@
+[Infos]
+Brand = "Siglent"
+Device = "SDS824X-HD"
+
+[Specs]
+Channel = 4
+Bandwith = 200_000_000
+Memory = 100_000_000
+Resolution = 12
+Sensiviy = [
+    0.000_5, 
+    10
+    ]
+Timebase = [
+    0.00_000_001, 
+    1000
+    ]
+Trigger = [
+    "Edge", 
+    "Slope", 
+    "Pulse width",
+    "Window",
+    "Runt", 
+    "Interval", 
+    "Dropout", 
+    "Pattern", 
+    "Video", 
+    "Qualified", 
+    "Nth edge", 
+    "Delay", 
+    "Setup/Hold time", 
+    "Serial"
+    ]
+Serial = [
+    "I2C",
+    "SPI",
+    "UART",
+    "CAN",
+    "LIN"
+]
+ChannelColor = ["Red", "Yellow", "Blue", "Green"]
+
+[Generator]
+Enabled = false
+Freq = 125_000_000
+Memory = 16_000
+Channel = 1
+
+[MixedSignal]
+Enabled = false
+Channel = 16
+SampleRate = 1_000_000_000
+Memory = 10_000_000
+
