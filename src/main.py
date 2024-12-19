@@ -2,9 +2,12 @@ def main():
     print("Hello World !")
 
     from pySDS import PySDS
+    from datetime import datetime
     Dev = PySDS("192.168.1.5")
 
-    print(Dev.GetDeviceStatus())
+    # print(Dev.SetDate(datetime.now()))
+    print(Dev.LockDevicePanel())
+    print(Dev.GetDevicePanelLockState())
 
 if __name__ == '__main__':
     main()

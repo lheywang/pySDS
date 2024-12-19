@@ -1,11 +1,11 @@
 # ============================================================================================================
-# Channel.py
+# Maths.py
 # lheywang on 17/12/2024
 #
-# Base file for the channel class
+# Base file for the maths class
 #
 # ============================================================================================================
 
-class SiglentChannel:
+class SiglentMaths:
     def __init__(self, instr):
         self.__instr__ = instr

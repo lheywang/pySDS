@@ -39,26 +39,24 @@ AUTO_CALIBRATE --> Partially available
 -- *CAL?
 -- *CLS 
 -- CMR?
-DATE
+-- DATE --> Unable to get the date
 -- DDR? 
 -- *ESE
 -- *ESR?
 -- EXR?
 -- *IDN?
 -- INR?
-LOCK
-MEMORY_SIZE
+-- LOCK
+-- MEMORY_SIZE
 -- *OPC
 -- *OPT? 
-PANEL_SETUP
 -- *RCL
-RECALL_PANEL
 -- *RST 
 -- *SAV
 -- *SRE 
 -- *STB? 
+BUZZER
  
-
 REF_SET ???     --> Read doc
 
 # Communication settings
@@ -107,6 +105,8 @@ FORMAT_VDISK
 GET_CSV
 HARDCOPY_SETUP
 STORE
+PANEL_SETUP
+RECALL_PANEL
 
 # Maths
 DEFINE?
@@ -137,4 +137,4 @@ XY_DISPLAY      --> Read doc
 CYMOMETER       --> Read doc
 
 # Misc
-BUZZER
+

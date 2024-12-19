@@ -1,1 +1,1 @@
-from channel import SDSChannel
+from .channel import SiglentChannel

@@ -15,7 +15,18 @@ from datetime import datetime
 import pyvisa # type: ignore
 
 # Others files
-# from channel import SDSChannel
+from acquisition import SiglentAcquisition
+from trigger import SiglentTrigger
+from communication import SiglentCommunication
+from channel import SiglentChannel
+from cursor import SiglentCursor
+from autotest import SiglentAutotest
+from files import SiglentFiles
+from maths import SiglentMaths
+from screen import SiglentScreen
+from counter import SiglentCounter
+
+
 
 
 class PySDS:
@@ -90,6 +101,10 @@ class PySDS:
             # Init here some standard channels
             # Make sure to load the settings direcly !
 
+        # Then, initialize all of the subclass
+        self.Trigger = SiglentTrigger(self.__instr__)
+
+
         # Then, load default settings by sending request to get the actual state of the device
 
         return
@@ -149,6 +164,48 @@ class PySDS:
                 int(Ret[11]), 
                 int(Ret[13])]
     
+
+    def EnableBuzzer(self):
+        """
+        PySDS [EnableBuzzer] :  Enable the device buzzer
+
+            Arguments :
+                None
+
+            Returns :
+                self.GetAllErrors()
+        """
+        self.__instr__.write("BUZZ ON")
+        return self.GetAllErrors()
+
+    def DisableBuzzer(self):
+        """
+        PySDS [DisableBuzzer] : Disable the device buzzer
+
+            Arguments :
+                None
+
+            Returns :
+                self.GetAllErrors()
+        """
+        self.__instr__.write("BUZZ OFF")
+        return self.GetAllErrors()
+
+    def GetBuzzerEnablingState(self):
+        """
+        PySDS [GetBuzzerEnablingState] :    Return the buzzer enabling state (ON or OFF)
+
+        Arguments :
+            None
+
+        Returns :
+            True | False
+        """
+        Ret = self.__instr__.query("BUZZ?").strip().split(" ")[-1]
+        if Ret == "ON" :
+            return True
+        return False
+    
     def Calibrate(self):
         """
         PySDS [Calibrate] : Calibrate the device. 
@@ -165,7 +222,57 @@ class PySDS:
         """
 
         Ret = self.__instr__.query("*CAL?")
-        return int(Ret.strip().split(" ")[1])
+        return int(Ret.strip().split(" ")[-1])
+
+    def EnableAutomaticCalibration(self):
+        """
+        PySDS [EnableAutomaticCalibration] :    Enable automatic calibration of the device. (When ? )
+
+        WARNING : This command is only available on some CFL series devices
+
+            Arguments :
+                None
+
+            Returns :
+                self.GetAllErrors() : List of errors
+        """
+
+        self.__instr__.write("ACAL ON")
+        return self.GetAllErrors()
+
+    def DisableAutomaticCalibration(self):
+        """
+        PySDS [DisableAutomaticCalibration] :    Disable automatic calibration of the device.
+
+        WARNING : This command is only available on some CFL series devices
+
+            Arguments :
+                None
+
+            Returns :
+                self.GetAllErrors() : List of errors
+        """
+
+        self.__instr__.write("ACAL OFF")
+        return self.GetAllErrors()
+
+    def GetAutomaticCalibrationState(self):
+        """
+        PySDS [GetAutomaticCalibrationState] :   Return the state of the autocalibration
+
+        WARNING : This command is only available on some CFL series devices
+
+            Arguments :
+                None
+
+            Returns :
+                True | False if enabled | Disabled
+        """
+
+        Ret = self.__instr__.write("ACAL?").strip().split(" ")[-1]
+        if Ret == "ON":
+            return True
+        return False
     
     def ClearStatus(self):
         """
@@ -193,7 +300,7 @@ class PySDS:
         """
 
         Ret = self.__instr__.query("CMR?")
-        return int(Ret.strip().split(" ")[1])
+        return int(Ret.strip().split(" ")[-1])
 
     def ReadDDR(self):
         """
@@ -207,7 +314,7 @@ class PySDS:
         """
 
         Ret = self.__instr__.query("DDR?")
-        return int(Ret.strip().split(" ")[1])
+        return int(Ret.strip().split(" ")[-1])
 
     def ReadESE(self):
         """
@@ -249,7 +356,7 @@ class PySDS:
         """
 
         Ret = self.__instr__.query("EXR?")
-        return int(Ret.strip().split(" ")[1])
+        return int(Ret.strip().split(" ")[-1])
 
     def ReadIDN(self):
         """
@@ -275,7 +382,7 @@ class PySDS:
                 Integer : Register value
         """
 
-        return int(self.__instr__.query("INR?").strip().split(" ")[1])
+        return int(self.__instr__.query("INR?").strip().split(" ")[-1])
 
     def ReadOPC(self):
         """
@@ -396,12 +503,24 @@ class PySDS:
 
         self.__instr__.write(f"*SRE {value}")
         return self.GetAllErrors()
+
+    # =============================================================================================================================================
+    """
+    Up to this point, all functions shall be working on any device, even other than Siglent ones since they're part
+    of the IEEE 488.1 specification.
+
+    In any way, the class can't be constructed without a compatible device, that's why I didn't create a global SCPI engine...
+    """
+    # =============================================================================================================================================
     
     def GetDate(self):
         """
         PySDS [GetDate] :   Read and return the date stored on the oscilloscope RTC
 
         Actually, this function does not work, despite that it's presence is stated on the datasheet.
+        --> Possible issues : 
+                Function non implemented ?
+                Syntax not OK ?
         
             Arguments : 
                 None
@@ -443,7 +562,94 @@ class PySDS:
         return datetime(Ret[2], month, Ret[0], Ret[3], Ret[4], Ret[5])
 
     def SetDate(self, Date: datetime):
-        pass
+        """
+        PySDS [SetDate] :   Set the internal RTC date and time
+        
+            Arguments : 
+                Python Datetime object
+                
+            Returns :
+                self.GetAllErrors() returns (List of errors) 
+        """
+        self.__instr__.write(f"DATE {Date.day},{Date.strftime("%b").upper()},{Date.year},{Date.hour},{Date.minute},{Date.second}")
+        return self.GetAllErrors()
+
+    def LockDevicePanel(self):
+        """
+        PySDS [LockDevicePanel] : Lock the device front panel to prevent any actions of the user
+
+        WARNING : This command seems to exhibit some weird response and no action at all on an SDS824X-HD
+
+            Arguments :
+                None
+
+            Returns :   
+                self.GetAllErrors() : List of errors
+        """
+        self.__instr__.write("LOCK ON")
+        return self.GetAllErrors()
+
+    def UnlockDevicePanel(self):
+        """
+        PySDS [UnlockDevicePanel] : Unlock the device front panel to enable any actions of the user
+
+        WARNING : This command seems to exhibit some weird response and no action at all on an SDS824X-HD
+
+            Arguments :
+                None
+
+            Returns :   
+                self.GetAllErrors() : List of errors
+        """
+        self.__instr__.write("LOCK OFF")
+        return self.GetAllErrors()
+
+    def GetDevicePanelLockState(self):
+        """
+        PySDS [GetDevicePanelLockState] : Return the status of the lock on the front panel
+
+        WARNING : This command seems to exhibit some weird response and no action at all on an SDS824X-HD
+
+            Arguments :
+                None
+
+            Returns :   
+                Boolean : Lock (True) or not (False)
+        """
+        Ret = self.__instr__.query("LOCK?").strip().split(" ")[-1]
+        if Ret == "ON" :
+            return True
+        return False
+
+    def GetMemorySize(self):
+        """
+        PySDS [GetMemorySize] : Return the number in millions of samples that can be stored into the memory
+
+        WARNING : The value is expressed in number of samples, and not in bytes !
+
+            Arguments :
+                None
+
+            Returns :
+                Integer : The number of **MILLIONS** of sample that can be stored
+        """
+        Ret = self.__instr__.query("MSIZ?")
+        return int(Ret.strip().split(" ")[-1][:-1])
+
+    def SetMemorySize(self, value: int):
+        """
+        PySDS [SetMemorySize] : Set the memory size for the samples of the scope.
+
+        WARNING : The value is expressed in number of samples, and not in bytes !
+
+            Arguments : 
+                The value in **MILLIONS** to the used.
+
+            Returns :
+                self.GetAllErrors() returns (List of errors)  
+        """
+        self.__instr__.write(f"MSIZ {value}M")
+        return self.GetAllErrors()
 
     def RecallPreset(self, PresetNumber: int):
         """
@@ -645,7 +851,7 @@ class PySDS:
         """
 
         Ret = self.ReadOPT()
-        return Ret.split(" ")[1].split(",")
+        return Ret.split(" ")[-1].split(",")
 
     def GetDeviceStatus(self):
         """
@@ -672,7 +878,7 @@ class PySDS:
         for index, bit in enumerate(Bits) :
             match index :
                 case 0 :
-                    message = "An enabled INternal state change has occurred"
+                    message = "An enabled Internal state change has occurred"
                 case 1 :
                     message = "Reserved"
                 case 2 :
@@ -694,8 +900,6 @@ class PySDS:
                 print(f" {index:2} |  {bit:5} | -")
 
         return Bits
-
-
 
 
 

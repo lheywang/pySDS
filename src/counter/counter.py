@@ -1,11 +1,11 @@
 # ============================================================================================================
-# Channel.py
-# lheywang on 17/12/2024
+# Counter.py
+# lheywang on 19/12/2024
 #
-# Base file for the channel class
+# Base file for the counter class
 #
 # ============================================================================================================
 
-class SiglentChannel:
+class SiglentCounter:
     def __init__(self, instr):
         self.__instr__ = instr
