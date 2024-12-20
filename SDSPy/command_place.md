@@ -35,11 +35,11 @@ TRIG_PATTERN
 
 # Generic
 -- ALL_STATUS?
-AUTO_CALIBRATE --> Partially available
+AUTO_CALIBRATE --> Partially available  --> Deprecated
 -- *CAL?
 -- *CLS 
 -- CMR?
--- DATE --> Unable to get the date
+-- DATE --> Unable to get the date  --> Deprecated
 -- DDR? 
 -- *ESE
 -- *ESR?
@@ -57,7 +57,7 @@ AUTO_CALIBRATE --> Partially available
 -- *STB? 
 BUZZER
  
-REF_SET ???     --> Read doc
+REF_SET ???     --> Read doc    --> Deprecated
 
 # Communication settings
 COMM_NET 
@@ -67,8 +67,8 @@ COMM_HEADER
 ATTENUATION
 BANDWIDTH_LIMIT
 COUPLING
-FILTER
-FILT_SET
+FILTER          --> Deprecated
+FILT_SET        --> Deprecated
 INVERT_SET
 OFFSET
 PEAK_DETECT 
@@ -111,7 +111,7 @@ RECALL_PANEL
 # Maths
 DEFINE?
 FFT_WINDOW
-FFT_ZOOM 
+FFT_ZOOM        --> Deprecated
 FFT_SCALE 
 FFT_FULLSCREEN
 VERT_POSITION 
@@ -125,7 +125,7 @@ HOR_MAGNIFY
 HOR_POSITION 
 INTENSITY
 MENU
-PERSIST
+PERSIST         --> Deprecated
 PERSIST_SETUP 
 SCREEN_DUMP     --> Read doc
 SCREEN_SAVE     --> Read doc
@@ -134,7 +134,7 @@ STORE_SETUP     --> Read doc
 XY_DISPLAY      --> Read doc
 
 # Counter
-CYMOMETER       --> Read doc
+CYMOMETER       --> Read doc --> Deprecated
 
 # Misc
 
