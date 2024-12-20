@@ -10,6 +10,7 @@
 import ipaddress
 import tomllib
 from datetime import datetime
+from warnings import warn
 
 # Poetry managed lbraries
 import pyvisa  # type: ignore
@@ -107,6 +108,22 @@ class PySDS:
         self.Trigger = trigger.SiglentTrigger(self.__instr__, self)
 
         # Then, load default settings by sending request to get the actual state of the device
+        
+        # Check for support of depecrated commands !
+        # ACAL (SDS2000X and SDS1000CFL)
+        # AAUTS (Up to SDS1000X)
+        # COUNTER (SDS1000 non SPO)
+        # CSV SAVE (All but different formats...)
+        # DATE (SDS2000X and SDS1000CFL)
+        # FFTZOOM (Up to SDS1000X)
+        # FILTER (SDS1000 non SPO)
+        # FILT SET (SDS1000 non SPO)
+        # PEAK DETECT (Up to SDS1000X)
+        # PFCT (Up to SDS1000X)
+        # PERS (Up to SDS1000X)
+        # RECALL (Up to SDS1000X)
+        # REFSET (Up to SDS1000X)
+        # VPOS (Up to SDS1000X)
 
         return
 
@@ -237,56 +254,6 @@ class PySDS:
 
         Ret = self.__instr__.query("*CAL?")
         return int(Ret.strip().split(" ")[-1])
-
-    def EnableAutomaticCalibration(self):
-        """
-        PySDS [EnableAutomaticCalibration] :    Enable automatic calibration of the device. (When ? )
-
-        WARNING : This command is only available on some CFL series devices
-
-            Arguments :
-                None
-
-            Returns :
-                self.GetAllErrors() : List of errors
-        """
-
-        self.__instr__.write("ACAL ON")
-        return self.GetAllErrors()
-
-    def DisableAutomaticCalibration(self):
-        """
-        PySDS [DisableAutomaticCalibration] :    Disable automatic calibration of the device.
-
-        WARNING : This command is only available on some CFL series devices
-
-            Arguments :
-                None
-
-            Returns :
-                self.GetAllErrors() : List of errors
-        """
-
-        self.__instr__.write("ACAL OFF")
-        return self.GetAllErrors()
-
-    def GetAutomaticCalibrationState(self):
-        """
-        PySDS [GetAutomaticCalibrationState] :   Return the state of the autocalibration
-
-        WARNING : This command is only available on some CFL series devices
-
-            Arguments :
-                None
-
-            Returns :
-                True | False if enabled | Disabled
-        """
-
-        Ret = self.__instr__.write("ACAL?").strip().split(" ")[-1]
-        if Ret == "ON":
-            return True
-        return False
 
     #
     #   STANDARD SCPI COMMANDS
@@ -530,69 +497,6 @@ class PySDS:
     In any way, the class can't be constructed without a compatible device, that's why I didn't create a global SCPI engine...
     """
     # =============================================================================================================================================
-
-    def GetDate(self):
-        """
-        PySDS [GetDate] :   Read and return the date stored on the oscilloscope RTC
-
-        Actually, this function does not work, despite that it's presence is stated on the datasheet.
-        --> Possible issues :
-                Function non implemented ?
-                Syntax not OK ?
-
-            Arguments :
-                None
-
-            Returns :
-                Python Datetime object
-        """
-
-        Ret = self.__instr__.query("DATE?")
-        Ret = Ret.strip().split(" ")[1:]
-
-        # Why did they express month like that ? Cannot they send the number ?
-        match Ret[1]:
-            case "JAN":
-                month = 1
-            case "FEB":
-                month = 2
-            case "MAR":
-                month = 3
-            case "APR":
-                month = 4
-            case "MAY":
-                month = 5
-            case "JUN":
-                month = 6
-            case "JUL":
-                month = 7
-            case "AUG":
-                month = 8
-            case "SEP":
-                month = 9
-            case "OCT":
-                month = 10
-            case "NOV":
-                month = 11
-            case "DEC":
-                month = 12
-
-        return datetime(Ret[2], month, Ret[0], Ret[3], Ret[4], Ret[5])
-
-    def SetDate(self, Date: datetime):
-        """
-        PySDS [SetDate] :   Set the internal RTC date and time
-
-            Arguments :
-                Python Datetime object
-
-            Returns :
-                self.GetAllErrors() returns (List of errors)
-        """
-        self.__instr__.write(
-            f"DATE {Date.day},{Date.strftime("%b").upper()},{Date.year},{Date.hour},{Date.minute},{Date.second}"
-        )
-        return self.GetAllErrors()
 
     def LockDevicePanel(self):
         """
