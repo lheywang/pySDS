@@ -6,6 +6,7 @@ Device = "SDS824X-HD"
 Channel = 4
 ChannelColor = ["Red", "Yellow", "Blue", "Green"]
 LegacyFunctions = []
+BlacklistedFUnctions = []
 
 [Generator]
 Enabled = true # Installed by default with the latest firmware

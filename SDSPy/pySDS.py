@@ -13,6 +13,8 @@ from datetime import datetime
 from warnings import warn
 
 # Poetry managed lbraries
+import deprecated.acal
+import deprecated.date
 import pyvisa  # type: ignore
 
 # Others files
@@ -26,6 +28,7 @@ import files
 import maths
 import screen
 import counter
+import deprecated
 
 
 class PySDS:
@@ -105,8 +108,14 @@ class PySDS:
             # Make sure to load the settings direcly !
 
         # Then, initialize all of the subclass
-        self.Trigger = trigger.SiglentTrigger(self.__instr__, 
-                                              self)
+        self.Trigger = trigger.SiglentTrigger(self.__instr__, self)
+
+        # For some older device, load additionnal commands that are depecrated in the newest models / firmwares
+        if "ACAL" in self.__Config__["Specs"]["LegacyFunctions"]:
+            self.Calibration = deprecated.acal.ACAL(self.__instr__, self)
+
+        if "DATE" in self.__Config__["Specs"]["LegacyFunctions"]:
+            self.Date = deprecated.date.DATE(self.__instr__, self)
 
         # Then, load default settings by sending request to get the actual state of the device
         
