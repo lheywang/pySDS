@@ -69,6 +69,7 @@ class PySDS:
             print(
                 "     [ PySDS ] [ Init ] : Incorrect IP was passed to the constructor"
             )
+            self.DeviceOpenned = 0
             return
 
         try:
@@ -78,6 +79,7 @@ class PySDS:
             print(
                 "     [ PySDS ] [ Init ] : Unable to access to the device. Check if the IP is right, or if you can ping it !"
             )
+            self.DeviceOpenned = 0
             return
 
         # Then, request for the IDN command.
@@ -88,6 +90,7 @@ class PySDS:
         # Check if the brand is the right one, or this library isn't going to work !
         if IDN[0].find("Siglent") == -1:
             print("     [ PySDS ] [ Init ] : Found a non Siglent Device on this IP !")
+            self.DeviceOpenned = 0
             return
 
         # Parse some different fields
@@ -99,8 +102,8 @@ class PySDS:
         # First, replace any space in the name with a "-" to ensure compatibility within different OS
         self.model = self.model.replace(" ", "-")
 
-        # Load the right configuration file
-        self.__ConfigFile__ = self.model + ".toml"
+        # Load the right configuration file without the SDS in front
+        self.__ConfigFile__ = self.model[3:] + ".toml"
 
         self.__Config__ = None
         with open(f"config/{self.__ConfigFile__}", "rb") as f:
@@ -144,6 +147,7 @@ class PySDS:
         # REFSET (Up to SDS1000X)
         # VPOS (Up to SDS1000X)
 
+        self.DeviceOpenned = 1
         return
 
     def __repr__(self):
@@ -333,36 +337,6 @@ class PySDS:
         if Ret == "ON":
             return True
         return False
-
-    def GetMemorySize(self):
-        """
-        PySDS [GetMemorySize] : Return the number in millions of samples that can be stored into the memory
-
-        WARNING : The value is expressed in number of samples, and not in bytes !
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : The number of **MILLIONS** of sample that can be stored
-        """
-        Ret = self.__instr__.query("MSIZ?")
-        return int(Ret.strip().split(" ")[-1][:-1])
-
-    def SetMemorySize(self, value: int):
-        """
-        PySDS [SetMemorySize] : Set the memory size for the samples of the scope.
-
-        WARNING : The value is expressed in number of samples, and not in bytes !
-
-            Arguments :
-                The value in **MILLIONS** to the used.
-
-            Returns :
-                self.GetAllErrors() returns (List of errors)
-        """
-        self.__instr__.write(f"MSIZ {value}M")
-        return self.GetAllErrors()
 
     def RecallPreset(self, PresetNumber: int):
         """
