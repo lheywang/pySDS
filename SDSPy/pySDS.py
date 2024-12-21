@@ -105,7 +105,8 @@ class PySDS:
             # Make sure to load the settings direcly !
 
         # Then, initialize all of the subclass
-        self.Trigger = trigger.SiglentTrigger(self.__instr__, self)
+        self.Trigger = trigger.SiglentTrigger(self.__instr__, 
+                                              self)
 
         # Then, load default settings by sending request to get the actual state of the device
         
