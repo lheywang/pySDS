@@ -30,6 +30,8 @@ include = [
 python = "^3.12"
 pyvisa-py = "^0.7.2"
 black = "^24.10.0"
+numpy = "^2.2.0"
+matplotlib = "^3.10.0"
 
 
 [tool.poetry.group.test.dependencies]
