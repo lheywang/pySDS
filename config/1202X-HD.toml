@@ -1,0 +1,18 @@
+[Infos]
+Brand = "Siglent"
+Device = "SDS1102X-HD"
+
+[Specs]
+Channel = 2
+ChannelColor = ["Red", "Yellow"]
+LegacyFunctions = []
+BlacklistedFUnctions = []
+
+[Generator]
+Enabled = false
+
+[MixedSignal]
+Enabled = false
+
+[PowerAnalyser]
+Enabled = false

@@ -1,0 +1,19 @@
+[Infos]
+Brand = "Siglent"
+Device = "SDS6054A"
+
+[Specs]
+Channels = 4
+ChannelColor = ["Red", "Yellow", "Blue", "Green"]
+LegacyFunctions = []
+BlacklistedFUnctions = []
+
+[Generator]
+Enabled = false
+
+[MixedSignal]
+Enabled = false
+
+[PowerAnalyser]
+Enabled = false
+

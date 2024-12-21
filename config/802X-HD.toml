@@ -1,0 +1,18 @@
+[Infos]
+Brand = "Siglent"
+Device = "SDS802X-HD"
+
+[Specs]
+Channel = 2
+ChannelColor = ["Red", "Yellow"]
+LegacyFunctions = []
+BlacklistedFUnctions = []
+
+[Generator]
+Enabled = true # Installed by default with the latest firmware
+
+[MixedSignal]
+Enabled = true # Installed by default with the latest firmware
+
+[PowerAnalyser]
+Enabled = false

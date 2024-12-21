@@ -1,0 +1,18 @@
+[Infos]
+Brand = "Siglent"
+Device = "SDS2104X-Plus"
+
+[Specs]
+Channel = 4
+ChannelColor = ["Red", "Yellow", "Blue", "Green"]
+LegacyFunctions = []
+BlacklistedFUnctions = []
+
+[Generator]
+Enabled = false
+
+[MixedSignal]
+Enabled = false
+
+[PowerAnalyser]
+Enabled = false

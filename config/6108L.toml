@@ -1,0 +1,19 @@
+[Infos]
+Brand = "Siglent"
+Device = "SDS6108L"
+
+[Specs]
+Channels = 8
+ChannelColor = ["Yellow", "Pink", "Light Blue", "Green", "Violet", "Blue", "Red", "Orange"]
+LegacyFunctions = []
+BlacklistedFUnctions = []
+
+[Generator]
+Enabled = false
+
+[MixedSignal]
+Enabled = false
+
+[PowerAnalyser]
+Enabled = false
+

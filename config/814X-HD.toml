@@ -1,0 +1,18 @@
+[Infos]
+Brand = "Siglent"
+Device = "SDS814X-HD"
+
+[Specs]
+Channel = 4
+ChannelColor = ["Red", "Yellow", "Blue", "Green"]
+LegacyFunctions = []
+BlacklistedFUnctions = []
+
+[Generator]
+Enabled = true # Installed by default with the latest firmware
+
+[MixedSignal]
+Enabled = true # Installed by default with the latest firmware
+
+[PowerAnalyser]
+Enabled = false
