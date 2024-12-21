@@ -13,23 +13,28 @@ from datetime import datetime
 from warnings import warn
 
 # Poetry managed lbraries
-import deprecated.acal
-import deprecated.date
 import pyvisa  # type: ignore
 
 # Others files
-import acquisition
-import trigger
-import communication
-import channel
-import cursor
-import autotest
-import files
-import maths
-import screen
-import counter
-import deprecated
-
+from acquisition import SiglentAcquisition
+from channel import SiglentChannel
+from communication import SiglentCommunication
+from cursor import SiglentCursor
+from decode import SiglentDecode
+from deprecated_functions import ACAL, DATE, COUNTER
+from digital import SiglentDigital
+from display import SiglentScreen
+from Files import SiglentFiles
+from generics import SCPIGenerics
+from history import SiglentHistory
+from maths import SiglentMaths
+from measure import SiglentMeasure
+from pass_fail import SiglentAutotest
+from references import SiglentReference
+from timebase import SiglentTimebase
+from trigger import SiglentTrigger
+from waveform import SiglentWaveform
+from WGEN import SiglentWGEN
 
 class PySDS:
     """
@@ -108,14 +113,18 @@ class PySDS:
             # Make sure to load the settings direcly !
 
         # Then, initialize all of the subclass
-        self.Trigger = trigger.SiglentTrigger(self.__instr__, self)
+        self.Trigger = SiglentTrigger(self.__instr__, self)
+        self.Generics = SCPIGenerics(self.__instr__, self)
 
         # For some older device, load additionnal commands that are depecrated in the newest models / firmwares
         if "ACAL" in self.__Config__["Specs"]["LegacyFunctions"]:
-            self.Calibration = deprecated.acal.ACAL(self.__instr__, self)
+            self.Calibration = ACAL(self.__instr__, self)
 
         if "DATE" in self.__Config__["Specs"]["LegacyFunctions"]:
-            self.Date = deprecated.date.DATE(self.__instr__, self)
+            self.Date = DATE(self.__instr__, self)
+
+        if "COUNTER" in self.__Config__["Specs"]["LegacyFunctions"]:
+            self.Counter = COUNTER(self.__instr__, self)
 
         # Then, load default settings by sending request to get the actual state of the device
         
@@ -269,236 +278,6 @@ class PySDS:
     #   STANDARD SCPI COMMANDS
     #
 
-    def ClearStatus(self):
-        """
-        PySDS [ClearStatus] :   Clear the status register
-
-            Arguments :
-                None
-
-            Returns :
-                None
-        """
-
-        self.__instr__.write("*CLS")
-        return
-
-    def ReadCMR(self):
-        """
-        PySDS [ReadCMR] :   Read and clear the CMR register
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        Ret = self.__instr__.query("CMR?")
-        return int(Ret.strip().split(" ")[-1])
-
-    def ReadDDR(self):
-        """
-        PySDS [ReadDDR] :   Read and clear the DDR register
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        Ret = self.__instr__.query("DDR?")
-        return int(Ret.strip().split(" ")[-1])
-
-    def ReadESE(self):
-        """
-        PySDS [ReadESE] :   Read and clear the ESE register
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        Ret = self.__instr__.query("*ESE?")
-        return int(Ret.strip())
-
-    def ReadESR(self):
-        """
-        PySDS [ReadESR] :   Read and clear the ESE register
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        Ret = self.__instr__.query("*ESR?")
-        return int(Ret.strip())
-
-    def ReadEXR(self):
-        """
-        PySDS [ReadEXR] :   Read and clear the EXR register
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        Ret = self.__instr__.query("EXR?")
-        return int(Ret.strip().split(" ")[-1])
-
-    def ReadIDN(self):
-        """
-        PySDS [ReadIDN] :   Read back the device name
-
-            Arguments :
-                None
-
-            Returns :
-                String : The output of the command
-        """
-
-        return self.__instr__.query("*IDN?").strip()
-
-    def ReadINR(self):
-        """
-        PySDS [ReadINR] :   Read and clear the device status
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        return int(self.__instr__.query("INR?").strip().split(" ")[-1])
-
-    def ReadOPC(self):
-        """
-        PySDS [ReadOPC] :   Read the Operation Complete status bit.
-                            Actually, this function always return 1, because the device respond when the operation is complete...
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        return int(self.__instr__.query("*OPC?").strip())
-
-    def ReadOPT(self):
-        """
-        PySDS [ReadOPT] :   Read the installed options on the device
-
-            Arguments :
-                None
-
-            Returns :
-                String : The output of the command
-        """
-
-        return self.__instr__.query("*OPT?").strip()
-
-    def ReadSRE(self):
-        """
-        PySDS [ReadSRE] :   Read the service request enable register value
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        return int(self.__instr__.query("*SRE?").strip())
-
-    def ReadSTB(self):
-        """
-        PySDS [ReadSTB] :   Read the status register
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        return int(self.__instr__.query("*STB?").strip())
-
-    def SetESE(self, value: int):
-        """
-        PySDS [SetESE] :   Write the ESE Register
-
-            Arguments :
-                Integer : Value to be written
-
-            Returns :
-                self.GetAllErrors() returns (List of errors)
-        """
-
-        if value > 255 or value < 0:
-            print("     [ PySDS ] [ SetESE ] : Incorrect value passed !")
-            return -1
-
-        self.__instr__.write(f"*ESE {value}")
-        return self.GetAllErrors()
-
-    def SetESR(self, value: int):
-        """
-        PySDS [SetESR] :   Write the ESR Register
-
-            Arguments :
-                Integer : Value to be written
-
-            Returns :
-                self.GetAllErrors() returns (List of errors)
-        """
-
-        if value > 128 or value < 0:
-            print("     [ PySDS ] [ SetESR ] : Incorrect value passed !")
-            return -1
-
-        self.__instr__.write(f"*ESR {value}")
-        return self.GetAllErrors()
-
-    def SetOPC(self):
-        """
-        PySDS [SetOPC] :   Write the OPC (Operation Complete) Status bit
-
-            Arguments :
-                None
-
-            Returns :
-                self.GetAllErrors() returns (List of errors)
-        """
-        self.__instr__.write("*OPC")
-        return self.GetAllErrors()
-
-    def SetSRE(self, value: int):
-        """
-        PySDS [SetSRE] :   Write the ESR Register (Service Request Enable Register)
-
-            Arguments :
-                Integer : Value to be written
-
-            Returns :
-                self.GetAllErrors() returns (List of errors)
-        """
-
-        if value > 256 or value < 0:
-            print("     [ PySDS ] [ SetSRE ] : Incorrect value passed !")
-            return -1
-
-        self.__instr__.write(f"*SRE {value}")
-        return self.GetAllErrors()
-
     # =============================================================================================================================================
     """
     Up to this point, all functions shall be working on any device, even other than Siglent ones since they're part
@@ -648,6 +427,8 @@ class PySDS:
         PySDS [GetAllErrors] :  Read the device errors, and until at least one error exist, continue to read it.
                                 For each errors, it will be printed in console and returned on a list, with it's lengh in first position.
 
+                                This function also trigger a reading of the status of the device to detect if value where adapted or cancelled.
+
             Arguments :
                 None
 
@@ -665,7 +446,7 @@ class PySDS:
         # When the last error has been fetched (or no errors at all !), we exit the loop
 
         while FetchNextError:
-            Ret = self.ReadEXR()
+            Ret = self.Generics.ReadEXR()
 
             if Ret == 0:
                 FetchNextError = False
@@ -730,6 +511,12 @@ class PySDS:
                         )
 
         # When the loop exist, we return the list
+        Retval = self.GetDeviceStatus()
+
+        if Retval != 0:
+            Errors[0] += 1
+            Errors.append(Retval + 1000) # Increment of 1000 to signify an error in the MSB register
+
         return Errors
 
     def GetDeviceStatus(self):
@@ -745,7 +532,7 @@ class PySDS:
         """
 
         # Fetch the value
-        Ret = self.ReadINR()
+        Ret = self.Generics.ReadINR()
 
         # Mask each bit in the range.
         # We do this by logic AND and shifting to get back to 0 | 1
@@ -812,7 +599,7 @@ class PySDS:
                 List of String for all options
         """
 
-        Ret = self.ReadOPT()
+        Ret = self.Generics.ReadOPT()
         return Ret.split(" ")[-1].split(",")
 
     def GetDeviceStatus(self):
@@ -827,7 +614,7 @@ class PySDS:
         """
 
         # Fetch the value
-        Ret = self.ReadSTB()
+        Ret = self.Generics.ReadSTB()
 
         # Mask each bit in the range.
         # We do this by logic AND and shifting to get back to 0 | 1

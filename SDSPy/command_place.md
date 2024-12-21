@@ -103,10 +103,10 @@ PFOP
 PFSC
 PFST
 
-# Print
+# Print (integrated into Files)
 SCDP
 
-# Recall
+# Recall (integrated into Base class)
 RCL
 RCPN
 
@@ -119,22 +119,22 @@ REFSA
 REFSC
 REFSR
 
-# Save
+# Save (integrated into base class)
 *SAV
 PNSU
 STPN
 
-# Status
+# Status (integrated into base class)
 *INR
 
-# System
+# System (integrated into base class)
 *CAL?
 BUZZ
 CONET
 SCSV
 EMOD
 
-# Timebase
+# Timebase 
 TDIV
 TRDL
 HMAG
@@ -202,7 +202,7 @@ TRLIN:DATA
 TRLIN:DAT2
 TRLIN:BAUD
 
-# Waweform
+# Waveform
 WF?
 WFSU
 
@@ -215,4 +215,4 @@ WVPR?
 
 # SCPI Generics
 All others commands, to be "hidden" from the user because they make the usage complexier
-
+--> They remain accessible, but shouldn't be used as single commands.
