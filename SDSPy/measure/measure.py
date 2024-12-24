@@ -5,8 +5,7 @@
 # Base file for the measure class
 #
 # ============================================================================================================
+from BaseOptionnalClass import SiglentBase
 
-class SiglentMeasure:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
+class SiglentMeasure(SiglentBase):
+    pass

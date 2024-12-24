@@ -5,13 +5,9 @@
 # Base file for the cursor class
 #
 # ============================================================================================================
+from BaseOptionnalClass import SiglentBase
 
-
-class ACAL:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
-
+class ACAL(SiglentBase):
     def EnableAutomaticCalibration(self):
         """
         PySDS [EnableAutomaticCalibration] :    Enable automatic calibration of the device. (When ? )

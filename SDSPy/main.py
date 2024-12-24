@@ -6,6 +6,10 @@ def main():
 
     Dev = pySDS.PySDS("192.168.1.5")
 
+    if Dev.DeviceOpenned == 0:
+        print("Device not openned. Exiting...")
+        exit()
+
     # print(Dev.SetDate(datetime.now()))
     print(Dev.Trigger.SetCoupling("C3", "AC"))
     print(Dev.Trigger.SetPattern(["C1", "C2"], ["L", "H"], "AND"))

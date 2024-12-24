@@ -5,9 +5,7 @@
 # Base file for the screen management class
 #
 # ============================================================================================================
+from BaseOptionnalClass import SiglentBase
 
-
-class SiglentScreen:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
+class SiglentScreen(SiglentBase):
+    pass

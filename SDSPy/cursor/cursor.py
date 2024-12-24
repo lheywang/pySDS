@@ -5,9 +5,7 @@
 # Base file for the cursor class
 #
 # ============================================================================================================
+from BaseOptionnalClass import SiglentBase
 
-
-class SiglentCursor:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
+class SiglentCursor(SiglentBase):
+    pass

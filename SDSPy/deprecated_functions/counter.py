@@ -5,9 +5,7 @@
 # Base file for the counter class
 #
 # ============================================================================================================
+from BaseOptionnalClass import SiglentBase
 
-
-class COUNTER:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
+class COUNTER(SiglentBase):
+    pass

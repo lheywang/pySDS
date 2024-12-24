@@ -5,8 +5,7 @@
 # Base file for the digital class
 #
 # ============================================================================================================
+from BaseOptionnalClass import SiglentBase
 
-class SiglentDigital:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
+class SiglentDigital(SiglentBase):
+    pass

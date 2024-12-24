@@ -5,13 +5,10 @@
 # Base file for the acquisition class
 #
 # ============================================================================================================
+from BaseOptionnalClass import SiglentBase
 
 
-class SiglentAcquisition:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
-
+class SiglentAcquisition(SiglentBase):
     def Arm(self):
         """
         pySDS [Acquisition][Arm] : Place the device to be ready to acquire a waveform once a triggering condition has been validated

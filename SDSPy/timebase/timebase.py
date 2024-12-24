@@ -5,8 +5,7 @@
 # Base file for the timebase class
 #
 # ============================================================================================================
+from BaseOptionnalClass import SiglentBase
 
-class SiglentTimebase:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
+class SiglentTimebase(SiglentBase):
+    pass

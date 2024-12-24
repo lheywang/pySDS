@@ -6,14 +6,11 @@
 #
 # ============================================================================================================
 from enum import Enum
+from BaseOptionnalClass import SiglentBase
 
 CommunicationForms = Enum("Header", [("LONG","LONG"),("SHORT","SHORT"),("OFF","OFF")])
 
-class SiglentCommunication:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
-
+class SiglentCommunication(SiglentBase):
     def SetCommHeader(self, Mode: CommunicationForms):
         """
         SDSpy [Communication][SetCommHeader] :  Configure the used form to answer for the device.

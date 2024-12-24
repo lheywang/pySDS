@@ -5,8 +5,7 @@
 # Base file for the decode class
 #
 # ============================================================================================================
+from BaseOptionnalClass import SiglentBase
 
-class SiglentDecode:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
+class SiglentDecode(SiglentBase):
+    pass

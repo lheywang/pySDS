@@ -5,8 +5,7 @@
 # Base file for the reference class
 #
 # ============================================================================================================
+from BaseOptionnalClass import SiglentBase
 
-class SiglentReference:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
+class SiglentReference(SiglentBase):
+    pass

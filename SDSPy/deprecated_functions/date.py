@@ -5,13 +5,11 @@
 # Base file for the cursor class
 #
 # ============================================================================================================
-
+from BaseOptionnalClass import SiglentBase
 from datetime import datetime
 
-class DATE:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
+class DATE(SiglentBase):
+    pass
 
     def GetDate(self):
         """

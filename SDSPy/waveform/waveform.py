@@ -5,8 +5,7 @@
 # Base file for the waveform class
 #
 # ============================================================================================================
+from BaseOptionnalClass import SiglentBase
 
-class SiglentWaveform:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
+class SiglentWaveform(SiglentBase):
+    pass

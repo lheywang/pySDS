@@ -5,9 +5,9 @@
 # Base file for the channel class
 #
 # ============================================================================================================
+from BaseOptionnalClass import SiglentBase
 
+class SiglentChannel(SiglentBase):
+    pass
 
-class SiglentChannel:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
+    

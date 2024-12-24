@@ -5,7 +5,7 @@
 # Base file for the trigger class
 #
 # ============================================================================================================
-
+from BaseOptionnalClass import SiglentBase
 from enum import Enum
 
 # Declaring our enums to prevent the user from sending unwanted values
@@ -40,11 +40,7 @@ TriggerPattern = Enum(
 )
 
 
-class SiglentTrigger:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
-
+class SiglentTrigger(SiglentBase):
     #
     #   COUPLING
     #

@@ -5,8 +5,7 @@
 # Base file for the history class
 #
 # ============================================================================================================
+from BaseOptionnalClass import SiglentBase
 
-class SiglentHistory:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
+class SiglentHistory(SiglentBase):
+    pass

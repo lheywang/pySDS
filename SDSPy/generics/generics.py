@@ -6,13 +6,9 @@
 # This class could easily be reused with any IEEE 488.1 compliant device.
 #
 # ============================================================================================================
+from BaseOptionnalClass import SiglentBase
 
-
-class SCPIGenerics:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
-
+class SCPIGenerics(SiglentBase):
     def ClearStatus(self):
         """
         PySDS [ClearStatus] :   Clear the status register

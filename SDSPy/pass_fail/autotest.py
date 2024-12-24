@@ -5,9 +5,7 @@
 # Base file for the automated test API
 #
 # ============================================================================================================
+from BaseOptionnalClass import SiglentBase
 
-
-class SiglentAutotest:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
+class SiglentAutotest(SiglentBase):
+    pass
