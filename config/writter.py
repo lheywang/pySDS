@@ -18,6 +18,7 @@ with (open(ref + ".toml", "w+")) as f:
     
     f.write("LegacyFunctions = []\n")
     f.write("BlacklistedFUnctions = []\n")
+    f.write("impedance = [1000000]")
     f.write("\n")
 
     f.write("[Generator]\n")
