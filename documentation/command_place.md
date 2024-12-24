@@ -1,0 +1,218 @@
+# Commons (Done)
+Theses are implemented under the global class, alongside some others standard SCPI commands (*ESR, *EXR...)
+*IDN
+*OPC
+*RST
+
+# CommHeaders (Done)
+CHDR
+
+# Acquire
+ARM
+STOP
+ACQW
+AVGA
+MSIZ
+SAST?
+SARA?
+SANU?
+SXSA
+XYDS
+
+# Channel
+ATTN
+BWL
+CPL
+OFST
+SKEW
+TRA
+UNIT
+VDIV
+INVS
+
+# Cursor
+CRMS
+CRST
+CRTY
+CRVA
+
+# Decode (only available on the newest models)
+DCST
+DCPA
+DCIC
+DCSP
+DCUT
+DCCN
+DCLN
+
+# Digital
+DGCH
+DGST
+DGTH
+DI:SW
+TRA
+TSM
+CUS
+
+# Display
+DTJN
+GRDS
+INTS
+MENU
+PESU
+
+# History
+FRAM
+FTIM
+HSMD
+HSLST
+
+# Maths
+DEF
+INVS
+MTVD
+MTVP
+FFTC
+FFTF
+FFTP
+FFTS
+FFTT?
+FFTU
+FFTW
+
+# Measure
+CYMT?
+MEAD
+PACU
+PAVA?
+PASTAT
+MEACL
+MEGS
+MEGA
+MEGB
+
+# Pass/Fail
+PACL
+PFBF
+PFCM
+PFDD?
+PFDS
+PFEN
+PFFS
+PFOP
+PFSC
+PFST
+
+# Print (integrated into Files)
+SCDP
+
+# Recall (integrated into Base class)
+RCL
+RCPN
+
+# References
+REFCL
+REFDS
+REFLA
+REFPO
+REFSA
+REFSC
+REFSR
+
+# Save (integrated into base class)
+*SAV
+PNSU
+STPN
+
+# Status (integrated into base class)
+*INR
+
+# System (integrated into base class)
+*CAL?
+BUZZ
+CONET
+SCSV
+EMOD
+
+# Timebase 
+TDIV
+TRDL
+HMAG
+HPOS
+
+# Trigger (+ Serial)
+SET50
+TRCP
+TRLV
+TRLV2
+TRMD
+TRPA
+TRSE
+TRSL
+TRWI
+
+TRIIC:SCL
+TRIIC:SDA
+TRIIC:CON
+TRIIC:ADDR
+TRIIC:DATA
+TRIIC:DAT2
+TRIIC:QUAL
+TRIIC:RW
+TRIIC:ALEN
+TRIIC:DLEN
+
+TRSPI:CLK
+TRSPI:CLK:EDGE
+TRSPI:CLK:TIM
+TRSPI:MOSI
+TRSPI:MISO
+TRSPI:CSTP
+TRSPI:CS
+TRSPI:NCS
+TRSPI:TRTY
+TRSPI:DATA
+TRSPI:DLEN
+TRSPI:BIT
+
+TRUART:RX
+TRUART:TX
+TRUART:TRTY
+TRUART:CON
+TRUART:QUAL
+TRUART:DATA
+TRUART:BAUD
+TRUART:DLEN
+TRUART:PAR
+TRUART:POL
+TRUART:STOP
+TRUART:BIT
+
+TRCAN:SRC
+TRCAN:CON
+TRCAN:ID
+TRCAN:DATA
+TRCAN:DAT2
+TRCAN:BAUD
+
+TRLIN:SRC
+TRLIN:CON
+TRLIN:ID
+TRLIN:DATA
+TRLIN:DAT2
+TRLIN:BAUD
+
+# Waveform
+WF?
+WFSU
+
+# WGEN
+ARWV
+PROD?
+STL?
+WGEN
+WVPR?
+
+# SCPI Generics
+All others commands, to be "hidden" from the user because they make the usage complexier
+--> They remain accessible, but shouldn't be used as single commands.
