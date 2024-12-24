@@ -21,7 +21,7 @@ class SiglentCursor(SiglentBase):
             Private (0) :
                 None
 
-            Public (12):
+            Public (6):
                 SetCursorMode :     Set the mode for a cursor
                 GetCursorMode :     Read the mode of a cursor
                 PlaceCursor :       Place a cursor
