@@ -9,6 +9,31 @@ from BaseOptionnalClass import SiglentBase
 
 
 class SiglentAcquisition(SiglentBase):
+    """
+    pySDS [Acquision][SiglentAcquisition] :   C lass herited from SiglentBase. 
+                                                Store all command related to the control of acquision
+        Attributes :
+            Herited from SiglentBase
+
+        Methods :
+            Private (0) :
+                None
+
+            Public (13):
+                Arm :                       Prepare the device to be ready to trigger
+                Stop :                      Stop the device to be ready to trigger
+                ConfigureAquireMethod :     Configure the way of acquiring data
+                SetAverageCount :           Configure the average number of sample
+                GetAverageCount :           Get the number of average samples
+                GetMemorySize :             Get the size in sample of the memory used
+                SetMemorySize :             Configure the size in sample of the memory
+                GetAcquisitionStatus :      Return the acquision status
+                GetSampleRate :             Return the used sample rate (function of time resolution and channel)
+                GetSampleNumber :           Return the number of sample stored
+                SetInterpolationMethod :    Configure the interpolation method to be used (only on display, inter points)
+                EnableXYMode :              Enable the XY mode
+                DisableXYMode :             Disable the XY mode
+    """
     def Arm(self):
         """
         pySDS [Acquisition][Arm] : Place the device to be ready to acquire a waveform once a triggering condition has been validated

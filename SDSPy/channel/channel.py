@@ -8,37 +8,50 @@
 from BaseOptionnalClass import SiglentBase
 
 class SiglentChannel(SiglentBase):
+    """
+    pySDS [Channel][SiglentChannel] :   Class herited from SiglentBase. 
+                                        Store all command related to a channel
+        Attributes :
+            Herited from SiglentBase
+
+        Methods :
+            Private (0) :
+                None
+
+            Public (12):
+                SetAttenuation :            Configure channel attenuation
+                EnableBandwithFilter :      Enable 20 MHz filter on the channel 
+                DisableBandwithFilter :     Disable 20 MHz filter on the channel
+                SetCoupling :               Configure channel coupling
+                SetOffset :                 Configure channel offset
+                SetSkew :                   Configure channel skew
+                EnableTrace :               Enable trace draw on the screen
+                DisableTrace :              Disable trace draw on the screen
+                SetTraceUnit :              Configure trace unit
+                SetTraceDIV :               Configure trace gain
+                EnableTraceInvert :         Enable inversion of the trace
+                DisableTraceInvert :        Disable inversion of the trace
+    """
     def __init__(self, instr, baseclass, channel, impedance):
         """
             Overhide the standard class init to store some more advanced data !
 
             Check SiglentBase doc before !
 
-            Attributes :
-                Private (0) :
-                    __channel__ :   Channel ID, used when the command need a channel indicator
-                    __impedance__ : Authorized impedance for this input. Parsed from specs.
-
+            Added attributes :
+                Private (2) :
+                    __channel__ :   Descriptor of the channel
+                    __impedance__ : List of supported impedance for this channel
+                
                 Public (0) :
                     None
 
-            Methods :
+            Added methods :
                 Private (0) :
                     None
-
-                Public (12):
-                    SetAttenuation :            Configure channel attenuation
-                    EnableBandwithFilter :      Enable 20 MHz filter on the channel 
-                    DisableBandwithFilter :     Disable 20 MHz filter on the channel
-                    SetCoupling :               Configure channel coupling
-                    SetOffset :                 Configure channel offset
-                    SetSkew :                   Configure channel skew
-                    EnableTrace :               Enable trace draw on the screen
-                    DisableTrace :              Disable trace draw on the screen
-                    SetTraceUnit :              Configure trace unit
-                    SetTraceDIV :               Configure trace gain
-                    EnableTraceInvert :         Enable inversion of the trace
-                    DisableTraceInvert :        Disable inversion of the trace
+                
+                Public (0) : 
+                    None
         """
         super().__init__(instr, baseclass)
         self.__channel__ = channel

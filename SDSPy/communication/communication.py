@@ -5,13 +5,24 @@
 # Base file for the Communication class
 #
 # ============================================================================================================
-from enum import Enum
 from BaseOptionnalClass import SiglentBase
 
-CommunicationForms = Enum("Header", [("LONG","LONG"),("SHORT","SHORT"),("OFF","OFF")])
-
 class SiglentCommunication(SiglentBase):
-    def SetCommHeader(self, Mode: CommunicationForms):
+    """
+    pySDS [Communication][SiglentCommunication] :   Class herited from SiglentBase. 
+                                                    Store all command related to the communication bus
+        Attributes :
+            Herited from SiglentBase
+
+        Methods :
+            Private (0) :
+                None
+
+            Public (2):
+                SetCommHeader :      Configure the form of response of the device 
+                GetCommHeader :      Return the form of response of the device
+    """
+    def SetCommHeader(self, Mode: str):
         """
         SDSpy [Communication][SetCommHeader] :  Configure the used form to answer for the device.
 
@@ -25,10 +36,7 @@ class SiglentCommunication(SiglentBase):
                 self.GetAllErrors() : List of errors
         """
 
-        if Mode not in CommunicationForms:
-            print(
-                "     [ PySDS ] [ Communication ] [ SetCommHeader ] : Incorrect mode required"
-            )
+        if Mode not in ["LONG", "SHORT", "OFF"]:
             return [1, -1]  # Emulate the standard return type
         
         self.__instr__.write(f"COMM_HEADER {Mode}")
