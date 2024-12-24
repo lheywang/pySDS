@@ -19,6 +19,8 @@ SANU?
 SXSA
 XYDS
 
+# Autoset (Included into the base class)(Done)
+
 # Channel
 ATTN
 BWL
