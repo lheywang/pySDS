@@ -41,11 +41,38 @@ class PySDS:
     PySDS [class] : Parent class of the PySDS package.
                     Handle actually all of basic SCPI commands, and call subclasses for some advanced functionnalities !
 
+        Attributes :
+            Private :
+                __ip__ :            ip of the device. Used internally to check it's validity.
+                __rm__ :            pyvisa ressource manager
+                __instr__ :         Handle to the pyvisa object to interract with the device
+                __ConfigFile__ :    Configuration file used for the scope.
+                __Config__ :        Parsed configuration toml file
+                __Generics__ :      SCPIGenerics class. Used for low level interraction with the device.
+
+            Public :
+                ** Standard variables **
+                DeviceOpenned :     Get a non 0 value if the device was openned correctly. Otherwise, take 0
+                model :             Device model, parsed from *IDN command
+                SN :                Device SN, parsed from *IDN command
+                Firmware :          Device firmware revision, parsed from *IDN command
+
+                ** SCPI Variables **
+                Channel :           A list of channel presents on the device. Each is it's own SiglentChannel class.
+                Trigger :           A SiglentTrigger class
+
+
+
+        Methods :
+            Private :
+            
+            Public :
+
         Parents :
             None
 
         Subclass :
-            Channel
+            None
 
     """
 
@@ -109,15 +136,16 @@ class PySDS:
         with open(f"config/{self.__ConfigFile__}", "rb") as f:
             self.__Config__ = tomllib.load(f)
 
-        # Now, initialize some parameters from the configuration file
-        for Channel in range(self.__Config__["Specs"]["Channel"]):
-            pass
-            # Init here some standard channels
-            # Make sure to load the settings direcly !
+        # Create a generic class, for internal usage only
+        self.__Generics__ = SCPIGenerics(self.__instr__, self)
 
+        # Now, initialize some parameters from the configuration file
+        self.Channel =[]
+        for index in range(self.__Config__["Specs"]["Channel"]):
+            self.Channel.append(SiglentChannel(self.__instr__, self, f"C{index}", self.__Config__["impedance"]))
+    
         # Then, initialize all of the subclass
         self.Trigger = SiglentTrigger(self.__instr__, self)
-        self.Generics = SCPIGenerics(self.__instr__, self)
 
         # For some older device, load additionnal commands that are depecrated in the newest models / firmwares
         if "ACAL" in self.__Config__["Specs"]["LegacyFunctions"]:
@@ -277,6 +305,27 @@ class PySDS:
 
         Ret = self.__instr__.query("*CAL?")
         return int(Ret.strip().split(" ")[-1])
+    
+    #
+    #   AUTOSET
+    #
+
+    def Autoset(self):
+        """
+        pySDS [Autoset] : Launch an autoset procedure
+
+        WARNING :   This should be avoided as possible, since the autoset isn't the most reliable thing in the world. 
+                    It's possible that the scope will show a detail of the waweform where there is some others things to be seen.
+                    Use in a maximal number of case the manual settings to precisely control the predicted signal
+
+            Arguments :
+                None
+
+            Returns :
+                self.GetAllErrors() : List of errors that occured
+        """
+        self.__instr__.write("ASET")
+        return self.GetAllErrors()
 
     #
     #   STANDARD SCPI COMMANDS
@@ -420,7 +469,7 @@ class PySDS:
         # When the last error has been fetched (or no errors at all !), we exit the loop
 
         while FetchNextError:
-            Ret = self.Generics.ReadEXR()
+            Ret = self.__Generics__.ReadEXR()
 
             if Ret == 0:
                 FetchNextError = False
@@ -506,7 +555,7 @@ class PySDS:
         """
 
         # Fetch the value
-        Ret = self.Generics.ReadINR()
+        Ret = self.__Generics__.ReadINR()
 
         # Mask each bit in the range.
         # We do this by logic AND and shifting to get back to 0 | 1
@@ -573,7 +622,7 @@ class PySDS:
                 List of String for all options
         """
 
-        Ret = self.Generics.ReadOPT()
+        Ret = self.__Generics__.ReadOPT()
         return Ret.split(" ")[-1].split(",")
 
     def GetDeviceStatus(self):
@@ -588,7 +637,7 @@ class PySDS:
         """
 
         # Fetch the value
-        Ret = self.Generics.ReadSTB()
+        Ret = self.__Generics__.ReadSTB()
 
         # Mask each bit in the range.
         # We do this by logic AND and shifting to get back to 0 | 1
