@@ -6,6 +6,7 @@
 #
 # ============================================================================================================
 
+
 class SiglentBase:
     """
     pySDS [SiglentBase] : Standard class for all of SCPI subsystems. May be derivated into more specific options, if needed
@@ -32,6 +33,6 @@ class SiglentBase:
             Channel modify __init__.
     """
 
-    def __init__(self, instr, baseclass, number = 0):
+    def __init__(self, instr, baseclass, number=0):
         self.__instr__ = instr
         self.__baseclass__ = baseclass

@@ -10,7 +10,7 @@ from BaseOptionnalClass import SiglentBase
 
 class SiglentAcquisition(SiglentBase):
     """
-    pySDS [Acquision][SiglentAcquisition] :   C lass herited from SiglentBase. 
+    pySDS [Acquision][SiglentAcquisition] :   C lass herited from SiglentBase.
                                                 Store all command related to the control of acquision
         Attributes :
             Herited from SiglentBase
@@ -34,6 +34,7 @@ class SiglentAcquisition(SiglentBase):
                 EnableXYMode :              Enable the XY mode
                 DisableXYMode :             Disable the XY mode
     """
+
     def Arm(self):
         """
         pySDS [Acquisition][Arm] : Place the device to be ready to acquire a waveform once a triggering condition has been validated
@@ -73,15 +74,22 @@ class SiglentAcquisition(SiglentBase):
         """
 
         if Method not in ["SAMPLING", "PEAK_DETECT", "AVERAGE", "HIGH_RES"]:
-            print("     [ PySDS ] [ Acquisition ] [ ConfigureAquireMethod ] : Invalid aquisition way provided")
+            print(
+                "     [ PySDS ] [ Acquisition ] [ ConfigureAquireMethod ] : Invalid aquisition way provided"
+            )
             return -2
 
-        Ret = self.__instr__.query(f"ACQW {Method},{AverageNumber}").strip().split(" ")[-1].split(",")
+        Ret = (
+            self.__instr__.query(f"ACQW {Method},{AverageNumber}")
+            .strip()
+            .split(" ")[-1]
+            .split(",")
+        )
 
         if Ret[0] != Method and Ret[1] != AverageNumber:
             return -1
         return 0
-    
+
     def SetAverageCount(self, AverageNumber):
         """
         pySDS [Acquisition][SetAverageCount] : Configure the number of sampled used per average
@@ -97,6 +105,7 @@ class SiglentAcquisition(SiglentBase):
         if Ret[1] != AverageNumber:
             return -1
         return 0
+
     def GetAverageCount(self):
         """
         pySDS [Acquisition][GetAverageCount] : Return the number of sample used for averaging
@@ -108,7 +117,7 @@ class SiglentAcquisition(SiglentBase):
                 Integer : Number of samples
         """
         return int(self.__instr__.write("AVGA?").strip().split(" ")[-1])
-    
+
     def GetMemorySize(self):
         """
         PySDS [Acquisition][GetMemorySize] : Return the number in millions of samples that can be stored into the memory
@@ -138,7 +147,7 @@ class SiglentAcquisition(SiglentBase):
         """
         self.__instr__.write(f"MSIZ {value}M")
         return self.__baseclass__.GetAllErrors()
-    
+
     def GetAcquisitionStatus(self):
         """
         PySDS [Acquisition][GetAcquisitionStatus] : Return the acquisition status of the device
@@ -151,7 +160,7 @@ class SiglentAcquisition(SiglentBase):
         """
 
         return self.__instr__.query("SAST?").strip().split(" ")[-1]
-    
+
     def GetSampleRate(self):
         """
         PySDS [Acquisition][GetSampleRate] : Return the acquisition sample rate that is actually used
@@ -163,7 +172,7 @@ class SiglentAcquisition(SiglentBase):
                 String : Device response
         """
         return self.__instr__.query("SARA?").strip().split(" ")[-1]
-    
+
     def GetSampleNumber(self):
         """
         PySDS [Acquisition][GetSampleNumber] : Return the acquisition number of points captured
@@ -175,7 +184,7 @@ class SiglentAcquisition(SiglentBase):
                 String : Device response
         """
         return self.__instr__.query("SANU?").strip().split(" ")[-1]
-    
+
     def SetInterpolationMethod(self, Method):
         """
         PySDS [Acquisition][SetInterpolationMethod] :   Configure the interpolation method to be used
@@ -187,15 +196,17 @@ class SiglentAcquisition(SiglentBase):
                 0 | -1 : Device suceeded or failed
         """
         if Method not in ["ON", "OFF"]:
-            print("     [ PySDS ] [ Acquisition ] [ SetInterpolationMethod ] : Invalid interpolation method provided")
+            print(
+                "     [ PySDS ] [ Acquisition ] [ SetInterpolationMethod ] : Invalid interpolation method provided"
+            )
             return -2
 
         Ret = self.__instr__.query(f"SXSA {Method}").strip().split(" ")[-1]
-            
+
         if Ret != Method:
             return -1
         return 0
-    
+
     def EnableXYMode(self):
         """
         PySDS [Acquisition][EnableXYMode] :   Enable the XY mode

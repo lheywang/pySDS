@@ -7,6 +7,7 @@
 # ============================================================================================================
 from BaseOptionnalClass import SiglentBase
 
+
 class ACAL(SiglentBase):
     def EnableAutomaticCalibration(self):
         """

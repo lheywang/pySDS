@@ -8,6 +8,7 @@
 from BaseOptionnalClass import SiglentBase
 from datetime import datetime
 
+
 class DATE(SiglentBase):
     pass
 

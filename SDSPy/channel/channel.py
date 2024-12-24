@@ -7,9 +7,10 @@
 # ============================================================================================================
 from BaseOptionnalClass import SiglentBase
 
+
 class SiglentChannel(SiglentBase):
     """
-    pySDS [Channel][SiglentChannel] :   Class herited from SiglentBase. 
+    pySDS [Channel][SiglentChannel] :   Class herited from SiglentBase.
                                         Store all command related to a channel
         Attributes :
             Herited from SiglentBase
@@ -20,7 +21,7 @@ class SiglentChannel(SiglentBase):
 
             Public (12):
                 SetAttenuation :            Configure channel attenuation
-                EnableBandwithFilter :      Enable 20 MHz filter on the channel 
+                EnableBandwithFilter :      Enable 20 MHz filter on the channel
                 DisableBandwithFilter :     Disable 20 MHz filter on the channel
                 SetCoupling :               Configure channel coupling
                 SetOffset :                 Configure channel offset
@@ -32,26 +33,27 @@ class SiglentChannel(SiglentBase):
                 EnableTraceInvert :         Enable inversion of the trace
                 DisableTraceInvert :        Disable inversion of the trace
     """
+
     def __init__(self, instr, baseclass, channel, impedance):
         """
-            Overhide the standard class init to store some more advanced data !
+        Overhide the standard class init to store some more advanced data !
 
-            Check SiglentBase doc before !
+        Check SiglentBase doc before !
 
-            Added attributes :
-                Private (2) :
-                    __channel__ :   Descriptor of the channel
-                    __impedance__ : List of supported impedance for this channel
-                
-                Public (0) :
-                    None
+        Added attributes :
+            Private (2) :
+                __channel__ :   Descriptor of the channel
+                __impedance__ : List of supported impedance for this channel
 
-            Added methods :
-                Private (0) :
-                    None
-                
-                Public (0) : 
-                    None
+            Public (0) :
+                None
+
+        Added methods :
+            Private (0) :
+                None
+
+            Public (0) :
+                None
         """
         super().__init__(instr, baseclass)
         self.__channel__ = channel
@@ -64,14 +66,35 @@ class SiglentChannel(SiglentBase):
             Arguments :
                 Value : The attenuation value, between 0.1 and 10000 (checked against a list of values)
 
-            Returns :   
+            Returns :
                 Float :Attenuation value or -1 (failed)
         """
-        if Value not in [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000] :
+        if Value not in [
+            0.1,
+            0.2,
+            0.5,
+            1,
+            2,
+            5,
+            10,
+            20,
+            50,
+            100,
+            200,
+            500,
+            1000,
+            2000,
+            5000,
+            10000,
+        ]:
             return -1
 
-        return float(self.__instr__.query(f"{self.__channel__}:ATTN {Value}").strip().split(" ")[-1])
-    
+        return float(
+            self.__instr__.query(f"{self.__channel__}:ATTN {Value}")
+            .strip()
+            .split(" ")[-1]
+        )
+
     def EnableBandwithFilter(self):
         """
         pySDS [Channel][EnableBandwithFilter] : Enable a 20 Mhz low pass filter on the channel. Used to rejet high frequency noise.
@@ -82,7 +105,12 @@ class SiglentChannel(SiglentBase):
             Returns :
                 True | False : Filter has been set, or not
         """
-        ret = self.__instr__.query(f"BWL {self.__channel__},ON").strip().split(" ")[-1].split(",")[1] # Does the device return one channel or all ?
+        ret = (
+            self.__instr__.query(f"BWL {self.__channel__},ON")
+            .strip()
+            .split(" ")[-1]
+            .split(",")[1]
+        )  # Does the device return one channel or all ?
         if ret == "ON":
             return True
         return False
@@ -97,12 +125,17 @@ class SiglentChannel(SiglentBase):
             Returns :
                 True | False : Filter has been unset, or not
         """
-        ret = self.__instr__.query(f"BWL {self.__channel__},OFF").strip().split(" ")[-1].split(",")[1] # Does the device return one channel or all ?
+        ret = (
+            self.__instr__.query(f"BWL {self.__channel__},OFF")
+            .strip()
+            .split(" ")[-1]
+            .split(",")[1]
+        )  # Does the device return one channel or all ?
         if ret == "OFF":
             return True
         return False
-    
-    def SetCoupling(self, ACDC = "D", Impedance = 1000000):
+
+    def SetCoupling(self, ACDC="D", Impedance=1000000):
         """
         pySDS [Channel][SetCoupling] : Set the channel coupling mode.
 
@@ -117,14 +150,18 @@ class SiglentChannel(SiglentBase):
         """
         if ACDC not in ["A", "D"]:
             return "-1"
-        
+
         if Impedance not in self.__impedance__:
             return "-2"
-        
+
         intimp = "50" if Impedance == 50 else "1M"
-        return self.__instr__.query(f"{self.__channel__}:CPL {ACDC}{intimp}").strip().split(" ")[-1]
-    
-    def SetOffset(self, Offset : float):
+        return (
+            self.__instr__.query(f"{self.__channel__}:CPL {ACDC}{intimp}")
+            .strip()
+            .split(" ")[-1]
+        )
+
+    def SetOffset(self, Offset: float):
         """
         pySDS [Channel][SetOffset] : Configure the offset used.
 
@@ -134,9 +171,13 @@ class SiglentChannel(SiglentBase):
             Returns :
                 Offset configured, in volts
         """
-        return float(self.__instr__.query(f"{self.__channel__}:OFST {Offset}V").strip().split(" ")[-1][:-1])
-    
-    def SetSkew(self, Skew : int):
+        return float(
+            self.__instr__.query(f"{self.__channel__}:OFST {Offset}V")
+            .strip()
+            .split(" ")[-1][:-1]
+        )
+
+    def SetSkew(self, Skew: int):
         """
         pySDS [Channel][SetSkew] : Configure the delay between each channels, to compensate cable lenght matching
 
@@ -149,16 +190,16 @@ class SiglentChannel(SiglentBase):
                 [1, -1] if Skew is not valid !
         """
         if Skew < 100 or Skew > 100:
-            return [1, -1] # Emulate error code !
+            return [1, -1]  # Emulate error code !
 
         self.__instr__.write(f"{self.__channel__}:SKEW {Skew}")
         return self.__baseclass__.GetAllErrors()
-    
+
     def EnableTrace(self):
         """
         pySDS [Channel][EnableTrace] : Enable the draw of the trace on the screen
 
-            Arguments : 
+            Arguments :
                 None
 
             Return :
@@ -173,7 +214,7 @@ class SiglentChannel(SiglentBase):
         """
         pySDS [Channel][EnableTrace] : Disable the draw of the trace on the screen
 
-            Arguments : 
+            Arguments :
                 None
 
             Return :
@@ -183,8 +224,8 @@ class SiglentChannel(SiglentBase):
         if ret == "OFF":
             return True
         return False
-    
-    def SetTraceUnit(self, Unit : str):
+
+    def SetTraceUnit(self, Unit: str):
         """
         pySDS [Channel][SetTraceUnit] : Configure if the trace is on V (Volt) or A (Ampere)
 
@@ -194,15 +235,19 @@ class SiglentChannel(SiglentBase):
             Returns :
                 Returned unit
         """
-        return self.__instr__.query(f"{self.__channel__}:UNIT {Unit}").strip().split(" ")[-1]
-    
-    def SetTraceDIV(self, Div : float):
+        return (
+            self.__instr__.query(f"{self.__channel__}:UNIT {Unit}")
+            .strip()
+            .split(" ")[-1]
+        )
+
+    def SetTraceDIV(self, Div: float):
         """
         pySDS [Channel][SetTraceVDIV] : Configure the gain on the unit of the trace, from 500E-6 to 10
 
             Arguments :
                 Div : Gain to be applied
-            
+
             Returns :
                 Float : Applied gain
                 or -1 if invalid value
@@ -210,8 +255,12 @@ class SiglentChannel(SiglentBase):
         if Div < 0.000_5 or Div > 10:
             return -1
 
-        return float(self.__instr__.query(f"{self.__channel__}:VDIV {Div}").strip().split(" ")[-1][:-1])
-    
+        return float(
+            self.__instr__.query(f"{self.__channel__}:VDIV {Div}")
+            .strip()
+            .split(" ")[-1][:-1]
+        )
+
     def EnableTraceInvert(self):
         """
         pySDS [Channel][EnableTraceInvert] : Enable invert the measure of the trace (* -1)
@@ -237,8 +286,9 @@ class SiglentChannel(SiglentBase):
             Returns :
                 True | False : Trace has been (de-)inverted, or not
         """
-        ret = self.__instr__.query(f"{self.__channel__}:INVS OFF").strip().split(" ")[-1]
+        ret = (
+            self.__instr__.query(f"{self.__channel__}:INVS OFF").strip().split(" ")[-1]
+        )
         if ret == "OFF":
             return True
         return False
-    

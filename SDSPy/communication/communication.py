@@ -7,9 +7,10 @@
 # ============================================================================================================
 from BaseOptionnalClass import SiglentBase
 
+
 class SiglentCommunication(SiglentBase):
     """
-    pySDS [Communication][SiglentCommunication] :   Class herited from SiglentBase. 
+    pySDS [Communication][SiglentCommunication] :   Class herited from SiglentBase.
                                                     Store all command related to the communication bus
         Attributes :
             Herited from SiglentBase
@@ -19,9 +20,10 @@ class SiglentCommunication(SiglentBase):
                 None
 
             Public (2):
-                SetCommHeader :      Configure the form of response of the device 
+                SetCommHeader :      Configure the form of response of the device
                 GetCommHeader :      Return the form of response of the device
     """
+
     def SetCommHeader(self, Mode: str):
         """
         SDSpy [Communication][SetCommHeader] :  Configure the used form to answer for the device.
@@ -38,10 +40,10 @@ class SiglentCommunication(SiglentBase):
 
         if Mode not in ["LONG", "SHORT", "OFF"]:
             return [1, -1]  # Emulate the standard return type
-        
+
         self.__instr__.write(f"COMM_HEADER {Mode}")
         return self.__baseclass__.GetAllErrors()
-    
+
     def GetCommHeader(self):
         """
         SDSpy [Communication][GetCommHeader] :  Return the response form of the device

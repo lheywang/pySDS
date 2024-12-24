@@ -9,9 +9,10 @@ from BaseOptionnalClass import SiglentBase
 from ..channel import SiglentChannel
 from warnings import warn
 
+
 class SiglentCursor(SiglentBase):
     """
-    pySDS [Cursor][SiglentCursor] : Class herited from SiglentBase. 
+    pySDS [Cursor][SiglentCursor] : Class herited from SiglentBase.
                                     Store all command related the control of cursors
         Attributes :
             Herited from SiglentBase
@@ -20,8 +21,15 @@ class SiglentCursor(SiglentBase):
             Private (0) :
                 None
 
-            Public (12):     
+            Public (12):
+                SetCursorMode :     Set the mode for a cursor
+                GetCursorMode :     Read the mode of a cursor
+                PlaceCursor :       Place a cursor
+                GetPlacedCursor :   Return the placed cursor on a trace
+                SetCursorType :     Configure the cursor type
+                GetCursorValue :    Read the value of a cursor
     """
+
     def SetCursorMode(self, Mode):
         """
         pySDS [Cursor][SetCursorMode] : Set the mode of operation of the cursors
@@ -37,12 +45,14 @@ class SiglentCursor(SiglentBase):
         """
         if Mode not in ["ON", "OFF", "TRACK", "MANUAL"]:
             return "-1"
-        
+
         if Mode == "ON":
-            warn("      pySDS [Cursor][SetCursorMode] : Usage of a legacy mode has been done ! Check if it's correct !")
+            warn(
+                "      pySDS [Cursor][SetCursorMode] : Usage of a legacy mode has been done ! Check if it's correct !"
+            )
 
         return self.__instr__.query(f"CRMS {Mode}").strip().split(" ")[-1]
-    
+
     def GetCursorMode(self):
         """
         pySDS [Cursor][GetCursorMode] : Return the mode of operation of the cursor
@@ -54,8 +64,8 @@ class SiglentCursor(SiglentBase):
                 Device response
         """
         return self.__instr__.query("CRMS?").strip().split(" ")[-1]
-    
-    def PlaceCursor(self, Channel : SiglentChannel, Cursor, Position):
+
+    def PlaceCursor(self, Channel: SiglentChannel, Cursor, Position):
         """
         pySDS [Cursor][PlaceCursor] : Place a cursor
 
@@ -74,10 +84,10 @@ class SiglentCursor(SiglentBase):
         """
         if Cursor not in ["VREF", "VDIF", "TDIF", "TREF", "HREF", "HDIF"]:
             return [1, -1]
-        
+
         self.__instr__.write(f"{Channel.__channel__}:CRST {Cursor},{Position}")
         return self.__baseclass__.GetAllErrors()
-    
+
     def GetPlacedCursor(self, Channel: SiglentChannel):
         """
         pySDS [Cursor][GetPlacedCursor] : Return the name of the cursor placed on a channel
@@ -88,15 +98,19 @@ class SiglentCursor(SiglentBase):
             Returns :
                 List of cursor linked to this channel
         """
-        return self.__instr__.query(f"{Channel.__channel__}:CRST?").strip().split(" ").split(",")
-
+        return (
+            self.__instr__.query(f"{Channel.__channel__}:CRST?")
+            .strip()
+            .split(" ")
+            .split(",")
+        )
 
     def SetCursorType(self, Type):
         """
         pySDS [Cursor][SetCursorType] : Configure the cursor type
 
             Arguments :
-                Type : X | -X | Y | -Y 
+                Type : X | -X | Y | -Y
 
             Returns :
                 Configured type
@@ -104,10 +118,10 @@ class SiglentCursor(SiglentBase):
         """
         if Type not in ["X", "-X", "Y", "-Y"]:
             return "-1"
-        
+
         return self.__instr__.query(f"CRTY {Type}").strip().split(" ")[-1]
-    
-    def GetCursorValue(self, Channel : SiglentChannel, Mode):
+
+    def GetCursorValue(self, Channel: SiglentChannel, Mode):
         """
         pySDS [Cursor][GetCursorValue] : Return the values of a cursor
 
@@ -125,24 +139,23 @@ class SiglentCursor(SiglentBase):
 
                 or
                 [-err, -err, -err, -err] in case or error with err = errror code
-            
+
             Errors code
                 -1 : Error occured while running the command
         """
 
-        ret = self.__instr__.query(f"{Channel.__channel__}:CRVA? {Mode}").strip().split(" ")[-1].split(",")
-            
+        ret = (
+            self.__instr__.query(f"{Channel.__channel__}:CRVA? {Mode}")
+            .strip()
+            .split(" ")[-1]
+            .split(",")
+        )
+
         match ret[0]:
             case "HREL":
                 return [float(ret[1]), float(ret[2]), float(ret[3]), float(ret[4])]
             case "VREL":
                 return [float(ret[1]), 0.00, float(ret[2]), float(ret[3])]
-            case _: # default case
-                return [-1] * 4     
-        return [-2, -2, -2, -2] # shouldn't get here, and if we do, good luck !
-                
-        
-            
-
-
-        
+            case _:  # default case
+                return [-1] * 4
+        return [-2, -2, -2, -2]  # shouldn't get here, and if we do, good luck !

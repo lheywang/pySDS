@@ -7,5 +7,6 @@
 # ============================================================================================================
 from BaseOptionnalClass import SiglentBase
 
+
 class SiglentFiles(SiglentBase):
     pass

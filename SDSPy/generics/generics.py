@@ -8,6 +8,7 @@
 # ============================================================================================================
 from BaseOptionnalClass import SiglentBase
 
+
 class SCPIGenerics(SiglentBase):
     def ClearStatus(self):
         """

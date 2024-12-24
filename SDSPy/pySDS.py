@@ -36,6 +36,7 @@ from trigger import SiglentTrigger
 from waveform import SiglentWaveform
 from WGEN import SiglentWGEN
 
+
 class PySDS:
     """
     PySDS [class] : Parent class of the PySDS package.
@@ -65,7 +66,7 @@ class PySDS:
 
         Methods :
             Private :
-            
+
             Public :
 
         Parents :
@@ -140,10 +141,14 @@ class PySDS:
         self.__Generics__ = SCPIGenerics(self.__instr__, self)
 
         # Now, initialize some parameters from the configuration file
-        self.Channel =[]
+        self.Channel = []
         for index in range(self.__Config__["Specs"]["Channel"]):
-            self.Channel.append(SiglentChannel(self.__instr__, self, f"C{index}", self.__Config__["impedance"]))
-    
+            self.Channel.append(
+                SiglentChannel(
+                    self.__instr__, self, f"C{index}", self.__Config__["impedance"]
+                )
+            )
+
         # Then, initialize all of the subclass
         self.Trigger = SiglentTrigger(self.__instr__, self)
 
@@ -158,7 +163,7 @@ class PySDS:
             self.Counter = COUNTER(self.__instr__, self)
 
         # Then, load default settings by sending request to get the actual state of the device
-        
+
         # Check for support of depecrated commands !
         # ACAL (SDS2000X and SDS1000CFL)
         # AAUTS (Up to SDS1000X)
@@ -305,7 +310,7 @@ class PySDS:
 
         Ret = self.__instr__.query("*CAL?")
         return int(Ret.strip().split(" ")[-1])
-    
+
     #
     #   AUTOSET
     #
@@ -314,7 +319,7 @@ class PySDS:
         """
         pySDS [Autoset] : Launch an autoset procedure
 
-        WARNING :   This should be avoided as possible, since the autoset isn't the most reliable thing in the world. 
+        WARNING :   This should be avoided as possible, since the autoset isn't the most reliable thing in the world.
                     It's possible that the scope will show a detail of the waweform where there is some others things to be seen.
                     Use in a maximal number of case the manual settings to precisely control the predicted signal
 
@@ -538,7 +543,9 @@ class PySDS:
 
         if Retval != 0:
             Errors[0] += 1
-            Errors.append(Retval + 1000) # Increment of 1000 to signify an error in the MSB register
+            Errors.append(
+                Retval + 1000
+            )  # Increment of 1000 to signify an error in the MSB register
 
         return Errors
 
