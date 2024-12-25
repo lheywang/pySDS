@@ -21,8 +21,15 @@ class SiglentDecode(SiglentBase):
             Private (0) :
                 None
 
-            Public (12):
-
+            Public (8):
+                EnableDecode :          Enable the bus decoding ability
+                DisableDecode :         Disable the bus decoding ability
+                ConfigureDecode :       Configure the global bus decoding behavior
+                ConfigureI2CDecode :    Configure the I2C Decoding
+                ConfigureSPIDecode :    Configure the SPI Decoding
+                ConfigureUARTDecode :   Configure the UART Decoding
+                ConfigureCANDecode :    Configure the CAN Decoding
+                ConfigureLINDecode :    Configure the LIN Decoding
     """
 
     def EnableDecode(self):
@@ -127,10 +134,10 @@ class SiglentDecode(SiglentBase):
                 Bus :       Bus number, as in integer
                 SCL :       SCL input. May be SiglentChannel or SiglentDigital class
                 SDA :       SCL input. May be SiglentChannel or SiglentDigital class
-                SCLT :      Trigger Level for SCL (Default to 1.65)
-                SDAT :      Trigger Level for SCL (Default to 1.65)
-                Display :   ON | OFF Display the bus decoding result (Default to ON)
-                RW :        ON | OFF Display the Read/Write bit inside of adress, or not (Default to ON)
+                SCLT :      Trigger Level for SCL                                           Default to 1.65
+                SDAT :      Trigger Level for SCL                                           Default to 1.65
+                Display :   ON | OFF Display the bus decoding result                        Default to ON
+                RW :        ON | OFF Display the Read/Write bit inside of adress, or not    Default to ON
 
             Returns :
                 GetAllErrors() : List of errors
@@ -301,11 +308,223 @@ class SiglentDecode(SiglentBase):
         # Returns errors
         return self.__baseclass__.GetAllErrors()
 
-    def ConfigureUARTDecode():
-        pass
+    def ConfigureUARTDecode(
+        self,
+        Bus: int,
+        RX,
+        TX,
+        Baud=115200,
+        DLEN=8,
+        Parity="NONE",
+        Stop=1,
+        Polarity="HIGH",
+        Bit="MSB",
+        RXT=1.65,
+        TXT=1.65,
+        Display="ON",
+    ):
+        """
+        pySDS [Decode][ConfigureUARTDecode] : Configure the UART Decoding
 
-    def ConfigureCANDecode():
-        pass
+        WARNING : If a SiglentDChannel is provided, then the associated trigger value will be ignored.
 
-    def ConfigureLINDecode():
-        pass
+            Arguments :
+                Bus :           Select the number of the bus decoder used. 1 | 2
+                RX :            SiglentChannel or SiglentDChannel associated with RX
+                TX :            SiglentChannel or SiglentDChannel associated with TX
+                Baud :          Baud rate.                                              Default to 115200
+                DLEN :          Data len.  5 <= Val <= 8                                Default to 8
+                Parity :        Parity bit. NONE | EVEN | ODD                           Default to NONE
+                Stop :          Number of stop bits. 1 | 1.5 | 2                        Default to 1
+                Polarity :      Polarity of the signal. LOW | HIGH                      Default to HIGH
+                Bit :           Order of bits on the message. MSB | LSB                 Default to MSB
+                RXT :           RX Trigger level.                                       Default to 1.65
+                TXT :           TX Trigger level.                                       Default to 1.65
+                Dsiplay :       Display the bus or not ON | OFF                         Default to ON
+
+            Returns :
+                GetAllErrors() : List of errors
+                or
+                List of errors that occured within the function execution, presented in the same way.
+
+            Errors codes
+                -1 :    Invalid type passed for RX
+                -2 :    Invalid type passed for TX
+                -3 :    Invalid Parity mode
+                -4 :    Invalid stop bit number
+                -5 :    Invalid polarity
+                -6 :    Invalid bit order
+                -7 :    Invalid display mode
+                -8 :    Invalid bus number
+                -9 :    Invalid data len
+                -10 :   Invalid baud rate
+        """
+        # parameters check
+        if (type(RX) is not type(SiglentChannel)) and (
+            type(RX) is not type(SiglentDChannel)
+        ):
+            return [1, -1]
+        if (type(TX) is not type(SiglentChannel)) and (
+            type(TX) is not type(SiglentDChannel)
+        ):
+            return [1, -2]
+
+        if Parity not in ["NONE", "ODD", "EVEN"]:
+            return [1, -3]
+        if Stop not in [1, 1.5, 2]:
+            return [1, -4]
+        if Polarity not in ["HIGH", "LOW"]:
+            return [1, -5]
+        if Bit not in ["MSB", "LSB"]:
+            return [1, -6]
+        if Display not in ["ON", "OFF"]:
+            return [1, -7]
+
+        if Bus < 1 or Bus > 2:
+            return [1, -8]
+        if DLEN < 5 or DLEN > 8:
+            return [1, -9]
+        if Baud < 300 or Baud > 50_000_000:
+            return [1, -10]
+
+        # Command creation
+        cmd = f"B{Bus}:DCUT "
+
+        cmd += f",RX,{RX.__channel__}"
+        if type(RX) == type(SiglentChannel):
+            cmd += f",RXT,{RXT}"
+
+        cmd += f",TX,{TX.__channel__}"
+        if type(TX) == type(SiglentChannel):
+            cmd += f",TXT,{TXT}"
+
+        cmd += f",BAUD,{Baud},DLEN,{DLEN},PAR,{Parity},STOP,{Stop},POL,{Polarity},BIT,{Bit},DIS,{Display}"
+
+        # command execution
+        self.__instr__.write(cmd)
+
+        # Returns
+        return self.__baseclass__.GetAllErrors()
+
+    def ConfigureCANDecode(
+        self, Bus: int, CANH, CANL, SRC, Baud, CANHT=1.65, CANLT=1.65, Display="ON"
+    ):
+        """
+        pySDS [Decode][ConfigureCANDecode] : Configure the CAN decoding operation
+
+        WARNING : If a SiglentDChannel is provided, then the associated trigger value will be ignored.
+
+            Arguments :
+                Bus :       ID of the bus where to place the decode results
+                CANH :      CANH associated SiglentChannel or SiglentDChannel.
+                CANL :      CANL associated SiglentChannel or SiglentDChannel.
+                SRC :       Source for decoding. CANH_H | CAN_L | SUB_L.
+                Baud :      Baud rate of the communication.
+                CANHT :     Threshold for the CANH pin.                             Default to 1.65
+                CANLT :     Threshold for the CANL pin.                             Default to 1.65
+                Display :   Shall we display the decoding on the screen ?           Default to ON
+
+            Returns :
+                GetAllErrors() : List of errors
+                or
+                List of errors that occured within the function execution, formatted in the same way
+
+            Errors codes :
+                -1 :    Invalid CANH type passed
+                -2 :    Invalid CANL type passed
+                -3 :    Invalid SRC
+                -4 :    Invalid DISPLAY setting.
+                -5 :    Invalid bus ID
+                -6 :    Invalid BAUD RATE
+        """
+        # parameters check
+        if (type(CANH) is not type(SiglentChannel)) and (
+            type(CANH) is not type(SiglentDChannel)
+        ):
+            return [1, -1]
+        if (type(CANL) is not type(SiglentChannel)) and (
+            type(CANL) is not type(SiglentDChannel)
+        ):
+            return [1, -2]
+
+        if SRC not in ["CAN_H", "CAN_L", "SUB_L"]:
+            return [1, -3]
+        if Display not in ["ON", "OFF"]:
+            return [1, -4]
+
+        if Bus < 1 or Bus > 2:
+            return [1, -5]
+        if Baud < 5_000 or Baud > 1_000_000:
+            return [1, -6]
+
+        # Command creation
+        cmd = f"B{Bus}:DCCN "
+
+        cmd += f",CANH,{CANH.__channel__}"
+        if type(CANH) == type(SiglentChannel):
+            cmd += f",CANHT,{CANHT}"
+
+        cmd += f",CANL,{CANL.__channel__}"
+        if type(CANL) == type(SiglentChannel):
+            cmd += f",CANLT,{CANLT}"
+
+        cmd += f",BAUD,{Baud},SRC,{SRC},DIS,{Display}"
+
+        # command execution
+        self.__instr__.write(cmd)
+
+        # Returns
+        return self.__baseclass__.GetAllErrors()
+
+    def ConfigureLINDecode(self, Bus: int, SRC, Baud, SRCT=1.65, Display="ON"):
+        """
+        pySDS [Decode][ConfigureLINDecode] : Configure the LIn decoding operation
+
+        WARNING : If a SiglentDChannel is provided, then the associated trigger value will be ignored.
+
+            Arguments :
+                Bus :       ID of the bus where to place the decode results
+                SRC :       SiglentChannel or SiglentDChannel associated with the SRC Pin
+                Baud :      Baud rate of the communication
+                SRCT :      Threshold the SRC Pin.                                              Default to 1.65
+                Display :   Shall we show the result on the screen ?                            Default to ON
+
+            Returns :
+                GetAllErrors() : List of errors
+                or
+                List of errors that occured within the function execution, formatted in the same way
+
+            Errors codes :
+                -1 :    Invalid SRC type passed
+                -2 :    Invalid DISPLAY setting.
+                -3 :    Invalid bus ID
+                -4 :    Invalid BAUD RATE
+        """
+        # parameters check
+        if (type(SRC) is not type(SiglentChannel)) and (
+            type(SRC) is not type(SiglentDChannel)
+        ):
+            return [1, -1]
+
+        if Display not in ["ON", "OFF"]:
+            return [1, -2]
+
+        if Bus < 1 or Bus > 2:
+            return [1, -3]
+        if Baud < 300 or Baud > 2_000:
+            return [1, -4]
+
+        # Command creation
+        cmd = f"B{Bus}:DCLN "
+
+        cmd += f",SRC,{SRC.__channel__}"
+        if type(SRC) == type(SiglentChannel):
+            cmd += f",SRCT,{SRCT}"
+
+        cmd += f",BAUD,{Baud},DIS,{Display}"
+
+        # command execution
+        self.__instr__.write(cmd)
+
+        # Returns
+        return self.__baseclass__.GetAllErrors()
