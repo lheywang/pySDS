@@ -6,8 +6,8 @@
 #
 # ============================================================================================================
 from BaseOptionnalClass import SiglentBase
-from ..channel import SiglentChannel
-from ..digital import SiglentDChannel
+from channel import SiglentChannel
+from digital import SiglentDChannel
 
 
 class SiglentDecode(SiglentBase):

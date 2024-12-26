@@ -25,10 +25,12 @@ with open(ref + ".toml", "w+") as f:
 
     f.write("[Generator]\n")
     f.write("Enabled = false\n")
+    f.write("Channel = 1\n")
     f.write("\n")
 
     f.write("[MixedSignal]\n")
     f.write("Enabled = false\n")
+    f.write("Channel = 16\n")
     f.write("\n")
 
     f.write("[PowerAnalyser]\n")

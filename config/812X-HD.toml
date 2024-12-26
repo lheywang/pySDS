@@ -11,9 +11,11 @@ impedance = [1000000]
 
 [Generator]
 Enabled = true # Installed by default with the latest firmware
+Channel = 1
 
 [MixedSignal]
 Enabled = true # Installed by default with the latest firmware
+Channel = 16
 
 [PowerAnalyser]
 Enabled = false
