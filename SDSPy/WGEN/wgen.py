@@ -9,4 +9,16 @@ from BaseOptionnalClass import SiglentBase
 
 
 class SiglentWGEN(SiglentBase):
-    pass
+    """
+    pySDS [Files][SiglentWGEN] :    Class herited from SiglentBase.
+                                        Store all command related the control of waveform generation
+
+        Attributes :
+            Herited from SiglentBase
+
+        Methods :
+            Private (0) :
+                None
+
+            Public (7):
+    """

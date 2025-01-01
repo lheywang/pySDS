@@ -9,4 +9,16 @@ from BaseOptionnalClass import SiglentBase
 
 
 class SiglentMeasure(SiglentBase):
-    pass
+    """
+    pySDS [Files][SiglentMeasure] : Class herited from SiglentBase.
+                                    Store all command related the control of automated measures
+
+        Attributes :
+            Herited from SiglentBase
+
+        Methods :
+            Private (0) :
+                None
+
+            Public (7):
+    """

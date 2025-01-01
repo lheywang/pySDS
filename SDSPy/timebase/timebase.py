@@ -9,4 +9,16 @@ from BaseOptionnalClass import SiglentBase
 
 
 class SiglentTimebase(SiglentBase):
-    pass
+    """
+    pySDS [Files][SiglentTimebase] :    Class herited from SiglentBase.
+                                        Store all command related the control of timebase on the display
+
+        Attributes :
+            Herited from SiglentBase
+
+        Methods :
+            Private (0) :
+                None
+
+            Public (7):
+    """

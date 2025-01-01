@@ -9,4 +9,16 @@ from BaseOptionnalClass import SiglentBase
 
 
 class SiglentWaveform(SiglentBase):
-    pass
+    """
+    pySDS [Files][SiglentWaveform] :    Class herited from SiglentBase.
+                                        Store all command related the control of waveform storage
+
+        Attributes :
+            Herited from SiglentBase
+
+        Methods :
+            Private (0) :
+                None
+
+            Public (7):
+    """

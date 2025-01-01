@@ -9,4 +9,16 @@ from BaseOptionnalClass import SiglentBase
 
 
 class SiglentReference(SiglentBase):
-    pass
+    """
+    pySDS [Files][SiglentReference] :   Class herited from SiglentBase.
+                                        Store all command related the control of references selection
+
+        Attributes :
+            Herited from SiglentBase
+
+        Methods :
+            Private (0) :
+                None
+
+            Public (7):
+    """
