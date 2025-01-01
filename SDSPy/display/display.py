@@ -38,12 +38,10 @@ class SiglentScreen(SiglentBase):
                 None
 
             Returns :
-                True | False : Interpolation has been enabled, or not
+                self.GetAllErrors()
         """
-        ret = self.__instr__.query("DTJN ON").strip().split(" ")[-1]
-        if ret == "ON":
-            return True
-        return False
+        self.__instr__.write("DTJN ON")
+        return self.__baseclass__.GetAllErrors()
 
     def DisableScreenInterpolation(self):
         """
@@ -53,12 +51,10 @@ class SiglentScreen(SiglentBase):
                 None
 
             Returns :
-                True | False : Interpolation has been disabled, or not
+                self.GetAllErrors()
         """
-        ret = self.__instr__.query("DTJN OFF").strip().split(" ")[-1]
-        if ret == "OFF":
-            return True
-        return False
+        self.__instr__.write("DTJN OFF")
+        return self.__baseclass__.GetAllErrors()
 
     def SelectGrid(self, Grid):
         """
@@ -68,16 +64,15 @@ class SiglentScreen(SiglentBase):
                 Grid : FULL | HALF | OFF
 
             Returns :
-                True | False : Grid has been set, or no
-                A false may also indicate a wrong grid has been passed.
+                self.GetAllErrors()
+                or
+                -1 : Invalid grid mode
         """
         if Grid not in ["FULL", "HALF", "OFF"]:
-            return False
+            return [1, -1]
 
-        ret = self.__instr__.query(f"GRDS {Grid}").strip().split(" ")[-1]
-        if ret.upper() == Grid:
-            return True
-        return False
+        self.__instr__.write(f"GRDS {Grid}")
+        return self.__baseclass__.GetAllErrors()
 
     def SetIntensity(self, Grid, Trace):
         """
@@ -88,25 +83,18 @@ class SiglentScreen(SiglentBase):
                 Trace : Value for the trace. 0 to 100
 
             Returns :
-                True | False : Parameters was set, or not
-                False may also indicate a wrong value
+                self.GetAllErrors()
+                or
+                -1 : Invalid grid value
+                -2 : Invalid trace value
         """
         if Grid < 0 or Grid > 100:
-            return False
+            return [1, -1]
         if Trace < 0 or Trace > 100:
-            return False
+            return [1, -2]
 
-        ret = (
-            self.__instr__.query(f"INTS GRID,{Grid},TRACE,{Trace}")
-            .strip()
-            .split(" ")[-1]
-            .split(",")
-        )
-        ret = [ret[1], ret[3]]
-
-        if ret[0] == Trace and ret[1] == Grid:
-            return True
-        return False
+        self.__instr__.write(f"INTS GRID,{Grid},TRACE,{Trace}")
+        return self.__baseclass__.GetAllErrors()
 
     def ShowMenu(self):
         """
@@ -116,12 +104,10 @@ class SiglentScreen(SiglentBase):
                 None
 
             Returns :
-                True | False : Menu has been showned
+                self.GetAllErrors()
         """
-        ret = self.__instr__.query("MENU ON").strip().split(" ")[-1]
-        if ret == "ON":
-            return True
-        return False
+        self.__instr__.write("MENU ON")
+        return self.__baseclass__.GetAllErrors()
 
     def HideMenu(self):
         """
@@ -131,12 +117,10 @@ class SiglentScreen(SiglentBase):
                 None
 
             Returns :
-                True | False : Menu has been hidden
+                self.GetAllErrors()
         """
-        ret = self.__instr__.query("MENU OFF").strip().split(" ")[-1]
-        if ret == "OFF":
-            return True
-        return False
+        self.__instr__.write("MENU OFF")
+        return self.__baseclass__.GetAllErrors()
 
     def ConfigurePersistence(self, Value):
         """
@@ -148,13 +132,12 @@ class SiglentScreen(SiglentBase):
                 Value : INFINITE | 1 | 5 | 10 | 30 | (OFF)
 
             Returns :
-                True | False. Value has been set, or not
-                False may also indicate a wrong setting.
+                self.GetAllErrors()
+                or
+                -1 : Invalid persistence value
         """
         if Value not in ["INFINITE", "1", "5", "10", "30", "OFF"]:
-            return False
+            return [1, -1]
 
-        ret = self.__instr__.query(f"PESU {Value}").strip().split(" ")[-1]
-        if ret == f"{Value}":
-            return True
-        return False
+        self.__instr__.write(f"PESU {Value}")
+        return self.__baseclass__.GetAllErrors()

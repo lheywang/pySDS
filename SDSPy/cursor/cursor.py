@@ -39,19 +39,20 @@ class SiglentCursor(SiglentBase):
                         *ON is reserved to some legacy devices, it's usage will trigger a warning !
 
             Returns :
-                Device return string
+                self.GetAllErrors()
                 or
-                "-1" if invalid mode has been passed
+                -1 if invalid mode has been passed
         """
         if Mode not in ["ON", "OFF", "TRACK", "MANUAL"]:
-            return "-1"
+            return [1, -1]
 
         if Mode == "ON":
             warn(
                 "      pySDS [Cursor][SetCursorMode] : Usage of a legacy mode has been done ! Check if it's correct !"
             )
 
-        return self.__instr__.query(f"CRMS {Mode}").strip().split(" ")[-1]
+        self.__instr__.write(f"CRMS {Mode}")
+        return self.__baseclass__.GetAllErrors()
 
     def GetCursorMode(self):
         """
@@ -117,9 +118,10 @@ class SiglentCursor(SiglentBase):
                 or "-1" if wrong type passed
         """
         if Type not in ["X", "-X", "Y", "-Y"]:
-            return "-1"
+            return [1, -1]
 
-        return self.__instr__.query(f"CRTY {Type}").strip().split(" ")[-1]
+        self.__instr__.write(f"CRTY {Type}").strip().split(" ")[-1]
+        return self.__baseclass__.GetAllErrors()
 
     def GetCursorValue(self, Channel: SiglentChannel, Mode):
         """

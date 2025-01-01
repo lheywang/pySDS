@@ -40,12 +40,10 @@ class SiglentDecode(SiglentBase):
                 None
 
             Returns :
-                True | False : The decode has been enabled or not
+                self.GetAllErrors()
         """
-        ret = self.__instr__.query("DCST ON").strip().split(" ")[-1]
-        if ret == "ON":
-            return True
-        return False
+        self.__instr__.write("DCST ON")
+        return self.__baseclass__.GetAllErrors()
 
     def DisableDecode(self):
         """
@@ -55,12 +53,10 @@ class SiglentDecode(SiglentBase):
                 None
 
             Returns :
-                True | False : The decode has been disabled, or not
+                self.GetAllErrors()
         """
-        ret = self.__instr__.query("DCST OFF").strip().split(" ")[-1]
-        if ret == "OFF":
-            return True
-        return False
+        self.__instr__.write("DCST OFF")
+        return self.__baseclass__.GetAllErrors()
 
     def ConfigureDecode(
         self, Bus: int, Format="HEX", List="OFF", Link="", Scroll=0, Lines=0
@@ -112,7 +108,7 @@ class SiglentDecode(SiglentBase):
         if Lines != 0:
             cmd += f",LSNM,{Lines}"
 
-        self.__instr__.query(f"DCPA {cmd}")
+        self.__instr__.write(f"DCPA {cmd}")
         return self.__baseclass__.GetAllErrors()
 
     def ConfigureI2CDecode(

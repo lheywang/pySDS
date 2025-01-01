@@ -41,16 +41,10 @@ class SiglentDigital(SiglentBase):
                 Channel : SiglentDChannel to be enabled and shown
 
             Returns :
-                True | False : Channel has been enabled, or not
+                self.GetAllErrors()
         """
-        ret = (
-            self.__instr__.query(f"{Channel.__channel__}:DGCH ON")
-            .strip()
-            .split(" ")[-1]
-        )
-        if ret == "ON":
-            return True
-        return False
+        self.__instr__.write(f"{Channel.__channel__}:DGCH ON")
+        return self.__baseclass__.GetAllErrors()
 
     def DisableDigitalChannel(self, Channel: SiglentDChannel):
         """
@@ -60,16 +54,10 @@ class SiglentDigital(SiglentBase):
                 Channel : SiglentDChannel to be disabled and hide
 
             Returns :
-                True | False : Channel has been disabled, or not
+                self.GetAllErrors()
         """
-        ret = (
-            self.__instr__.query(f"{Channel.__channel__}:DGCH OFF")
-            .strip()
-            .split(" ")[-1]
-        )
-        if ret == "OFF":
-            return True
-        return False
+        self.__instr__.write(f"{Channel.__channel__}:DGCH OFF")
+        return self.__baseclass__.GetAllErrors()
 
     def SetDigitalChannelThreshold(self, Group: int, Threshold, Value=0):
         """
@@ -103,7 +91,7 @@ class SiglentDigital(SiglentBase):
         if Threshold == "CUSTOM":
             cmd += f",{Value}V"
 
-        self.__instr__.query(cmd)
+        self.__instr__.write(cmd)
         return self.__baseclass__.GetAllErrors()
 
     def EnableDigital(self):
@@ -114,12 +102,10 @@ class SiglentDigital(SiglentBase):
                 None
 
             Returns :
-                True | False : Has been enabled
+                self.GetAllErrors()
         """
-        ret = self.__instr__.query("DI:SW ON").strip().split(" ")[-1]
-        if ret == "ON":
-            return True
-        return False
+        self.__instr__.write("DI:SW ON")
+        return self.__baseclass__.GetAllErrors()
 
     def DisableDigital(self):
         """
@@ -129,9 +115,7 @@ class SiglentDigital(SiglentBase):
                 None
 
             Returns :
-                True | False : Has been disabled
+                self.GetAllErrors()
         """
-        ret = self.__instr__.query("DI:SW OFF").strip().split(" ")[-1]
-        if ret == "OFF":
-            return True
-        return False
+        self.__instr__.query("DI:SW OFF")
+        return self.__baseclass__.GetAllErrors()

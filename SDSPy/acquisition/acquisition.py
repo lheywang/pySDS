@@ -79,16 +79,8 @@ class SiglentAcquisition(SiglentBase):
             )
             return -2
 
-        Ret = (
-            self.__instr__.query(f"ACQW {Method},{AverageNumber}")
-            .strip()
-            .split(" ")[-1]
-            .split(",")
-        )
-
-        if Ret[0] != Method and Ret[1] != AverageNumber:
-            return -1
-        return 0
+        self.__instr__.write(f"ACQW {Method},{AverageNumber}")
+        return self.__baseclass__.GetAllErrors()
 
     def SetAverageCount(self, AverageNumber):
         """
@@ -98,13 +90,11 @@ class SiglentAcquisition(SiglentBase):
                 AverageNumber : Number of sample used to compute an average point
 
             Returns :
-                0 | -1 : The device responded with the same settings or differents one.
+                self.GetAllErrors()
         """
-        Ret = self.__instr__.write(f"AVGA {AverageNumber}").strip().split(" ")[-1]
+        self.__instr__.write(f"AVGA {AverageNumber}")
 
-        if Ret[1] != AverageNumber:
-            return -1
-        return 0
+        return self.__baseclass__.GetAllErrors()
 
     def GetAverageCount(self):
         """
@@ -193,7 +183,7 @@ class SiglentAcquisition(SiglentBase):
                 Method : ON | OFF (sine interpolation or linear interpolation)
 
             Returns :
-                0 | -1 : Device suceeded or failed
+                self.GetAllErrors()
         """
         if Method not in ["ON", "OFF"]:
             print(
@@ -201,11 +191,8 @@ class SiglentAcquisition(SiglentBase):
             )
             return -2
 
-        Ret = self.__instr__.query(f"SXSA {Method}").strip().split(" ")[-1]
-
-        if Ret != Method:
-            return -1
-        return 0
+        self.__instr__.write(f"SXSA {Method}")
+        return self.__baseclass__.GetAllErrors()
 
     def EnableXYMode(self):
         """
@@ -215,13 +202,11 @@ class SiglentAcquisition(SiglentBase):
                 None
 
             Returns :
-                True | False
+                self.GetAllErrors()
         """
 
-        Ret = self.__instr__.query("XYDS ON").strip().split(" ")[-1]
-        if Ret != "ON":
-            return -1
-        return 0
+        self.__instr__.write("XYDS ON")
+        return self.__baseclass__.GetAllErrors()
 
     def DisableXYMode(self):
         """
@@ -231,9 +216,7 @@ class SiglentAcquisition(SiglentBase):
                 None
 
             Returns :
-                True | False
+                self.GetAllErrors()
         """
-        Ret = self.__instr__.query("XYDS OFF").strip().split(" ")[-1]
-        if Ret != "OFF":
-            return -1
-        return 0
+        self.__instr__.write("XYDS OFF")
+        return self.__baseclass__.GetAllErrors()

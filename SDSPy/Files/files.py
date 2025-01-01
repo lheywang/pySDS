@@ -22,4 +22,5 @@ class SiglentFiles(SiglentBase):
 
             Public (7):
     """
+
     pass

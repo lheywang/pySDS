@@ -67,7 +67,7 @@ class SiglentChannel(SiglentBase):
                 Value : The attenuation value, between 0.1 and 10000 (checked against a list of values)
 
             Returns :
-                Float :Attenuation value or -1 (failed)
+                self.GetAllErrors()
         """
         if Value not in [
             0.1,
@@ -89,11 +89,8 @@ class SiglentChannel(SiglentBase):
         ]:
             return -1
 
-        return float(
-            self.__instr__.query(f"{self.__channel__}:ATTN {Value}")
-            .strip()
-            .split(" ")[-1]
-        )
+        self.__instr__.write(f"{self.__channel__}:ATTN {Value}")
+        return self.__baseclass__.GetAllErrors()
 
     def EnableBandwithFilter(self):
         """
@@ -103,17 +100,11 @@ class SiglentChannel(SiglentBase):
                 None__
 
             Returns :
-                True | False : Filter has been set, or not
+                self.GetAllErrors()
         """
-        ret = (
-            self.__instr__.query(f"BWL {self.__channel__},ON")
-            .strip()
-            .split(" ")[-1]
-            .split(",")[1]
-        )  # Does the device return one channel or all ?
-        if ret == "ON":
-            return True
-        return False
+
+        self.__instr__.write(f"BWL {self.__channel__},ON")
+        return self.__baseclass__.GetAllErrors()
 
     def DisableBandwithFilter(self):
         """
@@ -123,17 +114,10 @@ class SiglentChannel(SiglentBase):
                 None
 
             Returns :
-                True | False : Filter has been unset, or not
+                self.GetAllErrors()
         """
-        ret = (
-            self.__instr__.query(f"BWL {self.__channel__},OFF")
-            .strip()
-            .split(" ")[-1]
-            .split(",")[1]
-        )  # Does the device return one channel or all ?
-        if ret == "OFF":
-            return True
-        return False
+        self.__instr__.write(f"BWL {self.__channel__},OFF")
+        return self.__baseclass__.GetAllErrors()
 
     def SetCoupling(self, ACDC="D", Impedance=1000000):
         """
@@ -144,7 +128,8 @@ class SiglentChannel(SiglentBase):
                 Impedance : Impedance of input. Warning : Some device doesn't support de 50 Ohm coupling !
 
             Returns :
-                Coupling string from the device
+                self.GetAllErrors()
+                or
                 "-1" : Incorrect coupling
                 "-2" : Incorrect impedance
         """
@@ -155,11 +140,9 @@ class SiglentChannel(SiglentBase):
             return "-2"
 
         intimp = "50" if Impedance == 50 else "1M"
-        return (
-            self.__instr__.query(f"{self.__channel__}:CPL {ACDC}{intimp}")
-            .strip()
-            .split(" ")[-1]
-        )
+        self.__instr__.write(f"{self.__channel__}:CPL {ACDC}{intimp}")
+
+        return self.__baseclass__.GetAllErrors()
 
     def SetOffset(self, Offset: float):
         """
@@ -169,13 +152,11 @@ class SiglentChannel(SiglentBase):
                 Offset, in volts
 
             Returns :
-                Offset configured, in volts
+                self.GetAllErrors()
         """
-        return float(
-            self.__instr__.query(f"{self.__channel__}:OFST {Offset}V")
-            .strip()
-            .split(" ")[-1][:-1]
-        )
+
+        self.__instr__.write(f"{self.__channel__}:OFST {Offset}V")
+        return self.__baseclass__.GetAllErrors()
 
     def SetSkew(self, Skew: int):
         """
@@ -203,12 +184,10 @@ class SiglentChannel(SiglentBase):
                 None
 
             Return :
-                True | False : Trace has been enabled
+                self.GetAllErrors()
         """
-        ret = self.__instr__.query(f"{self.__channel__}:TRA ON").strip().split(" ")[-1]
-        if ret == "ON":
-            return True
-        return False
+        self.__instr__.write(f"{self.__channel__}:TRA ON")
+        return self.__baseclass__.GetAllErrors()
 
     def DisableTrace(self):
         """
@@ -218,12 +197,10 @@ class SiglentChannel(SiglentBase):
                 None
 
             Return :
-                True | False : Trace has been disabled
+                self.GetAllErrors()
         """
-        ret = self.__instr__.query(f"{self.__channel__}:TRA OFF").strip().split(" ")[-1]
-        if ret == "OFF":
-            return True
-        return False
+        self.__instr__.query(f"{self.__channel__}:TRA OFF")
+        return self.__baseclass__.GetAllErrors()
 
     def SetTraceUnit(self, Unit: str):
         """
@@ -233,13 +210,11 @@ class SiglentChannel(SiglentBase):
                 Unit : V | A
 
             Returns :
-                Returned unit
+                self.GetAllErrors()
         """
-        return (
-            self.__instr__.query(f"{self.__channel__}:UNIT {Unit}")
-            .strip()
-            .split(" ")[-1]
-        )
+
+        self.__instr__.query(f"{self.__channel__}:UNIT {Unit}")
+        return self.__baseclass__.GetAllErrors()
 
     def SetTraceDIV(self, Div: float):
         """
@@ -249,17 +224,15 @@ class SiglentChannel(SiglentBase):
                 Div : Gain to be applied
 
             Returns :
-                Float : Applied gain
+                self.GetAllErrors()
+                or
                 or -1 if invalid value
         """
         if Div < 0.000_5 or Div > 10:
             return -1
 
-        return float(
-            self.__instr__.query(f"{self.__channel__}:VDIV {Div}")
-            .strip()
-            .split(" ")[-1][:-1]
-        )
+        self.__instr__.query(f"{self.__channel__}:VDIV {Div}")
+        return self.__baseclass__.GetAllErrors()
 
     def EnableTraceInvert(self):
         """
@@ -269,12 +242,10 @@ class SiglentChannel(SiglentBase):
                 None
 
             Returns :
-                True | False : Trace has been inverted, or not
+                self.GetAllErrors()
         """
-        ret = self.__instr__.query(f"{self.__channel__}:INVS ON").strip().split(" ")[-1]
-        if ret == "ON":
-            return True
-        return False
+        self.__instr__.query(f"{self.__channel__}:INVS ON")
+        return self.__baseclass__.GetAllErrors()
 
     def DisableTraceInvert(self):
         """
@@ -284,11 +255,7 @@ class SiglentChannel(SiglentBase):
                 None
 
             Returns :
-                True | False : Trace has been (de-)inverted, or not
+                self.GetAllErrors()
         """
-        ret = (
-            self.__instr__.query(f"{self.__channel__}:INVS OFF").strip().split(" ")[-1]
-        )
-        if ret == "OFF":
-            return True
-        return False
+        self.__instr__.query(f"{self.__channel__}:INVS OFF")
+        return self.__baseclass__.GetAllErrors()
