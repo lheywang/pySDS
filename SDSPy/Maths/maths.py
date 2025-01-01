@@ -17,10 +17,22 @@ class SiglentMaths(SiglentBase):
             Herited from SiglentBase
 
         Methods :
-            Private (0) :
-                None
+            Private (1) :
+                __init__ :                  Small overhide to add one variable
 
-            Public (7):
+            Public (12):
+                DefineMathOperation :       Configure math operation
+                EnableMathInvert :          Invert the output
+                DisableMathInvert :         De-Invert the output
+                SetMathVDIV :               Configure VDIV of math channel
+                SetMathVerticalPosition :   Set Math position
+                SetFFTCenter :              Set FFT Center
+                SetFTTDisplayMode :         Set FFT Display mode
+                SetFFTVerticalPosition :    Set FFT Position
+                SetFFTVerticalScale :       Set FFT Scale
+                SetFFTHorizontalScale :     Set FFT Horizontal scale
+                SetFFTVerticalUnit :        Set FFT Unit
+                SetFFTWindow :              Set FFT Unit
     """
 
     def __init__(self, instr, baseclass, number=0):
