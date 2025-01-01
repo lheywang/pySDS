@@ -20,7 +20,14 @@ class SiglentScreen(SiglentBase):
             Private (0) :
                 None
 
-            Public (6):
+            Public (7):
+                EnableScreenInterpolation :         Enable continuous display of the tracks
+                DisableScreenInterpolation :        Enable the display of only points
+                SelectGrid :                        Select the grid type
+                SetIntensity :                      Select the trace and grid intensity
+                ShowMenu :                          Show menu
+                HideMenu :                          Hide menu
+                ConfigurePersistence :              Configure trace persistence
     """
 
     def EnableScreenInterpolation(self):

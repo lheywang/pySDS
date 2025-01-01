@@ -151,6 +151,7 @@ class PySDS:
 
         # Then, initialize all of the subclass
         self.Trigger = SiglentTrigger(self.__instr__, self)
+        self.Acquistion = SiglentAcquisition(self.__instr__, self)
 
         # For some older device, load additionnal commands that are depecrated in the newest models / firmwares
         if "ACAL" in self.__Config__["Specs"]["LegacyFunctions"]:

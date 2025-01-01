@@ -9,4 +9,16 @@ from BaseOptionnalClass import SiglentBase
 
 
 class SiglentMaths(SiglentBase):
-    pass
+    """
+    pySDS [Files][SiglentMaths] :   Class herited from SiglentBase.
+                                    Store all command related the control of maths functions.
+
+        Attributes :
+            Herited from SiglentBase
+
+        Methods :
+            Private (0) :
+                None
+
+            Public (7):
+    """
