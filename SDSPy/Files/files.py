@@ -42,4 +42,3 @@ class SiglentFiles(SiglentBase):
             f.write(data)
 
         return self.__baseclass__.GetAllErrors()
-

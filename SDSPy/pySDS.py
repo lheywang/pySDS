@@ -149,7 +149,7 @@ class PySDS:
                 )
             )
 
-        # Then, initialize all of the subclass    
+        # Then, initialize all of the subclass
         self.Acquistion = SiglentAcquisition(self.__instr__, self)
         self.Communication = SiglentCommunication(self.__instr__, self)
         self.Cursor = SiglentCursor(self.__instr__, self)
