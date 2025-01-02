@@ -29,7 +29,7 @@ from generics import SCPIGenerics
 from history import SiglentHistory
 from maths import SiglentMaths
 from measure import SiglentMeasure
-from pass_fail import SiglentAutotest
+from passfail import SiglentPassFail
 from references import SiglentReference
 from timebase import SiglentTimebase
 from trigger import SiglentTrigger
@@ -149,9 +149,17 @@ class PySDS:
                 )
             )
 
-        # Then, initialize all of the subclass
-        self.Trigger = SiglentTrigger(self.__instr__, self)
+        # Then, initialize all of the subclass    
         self.Acquistion = SiglentAcquisition(self.__instr__, self)
+        self.Communication = SiglentCommunication(self.__instr__, self)
+        self.Cursor = SiglentCursor(self.__instr__, self)
+        self.Decode = SiglentDecode(self.__instr__, self)
+        self.Digital = SiglentDigital(self.__instr__, self)
+        self.Files = SiglentFiles(self.__instr__, self)
+        self.History = SiglentHistory(self.__instr__, self)
+        self.Maths = SiglentMaths(self.__instr__, self)
+        self.Measure = SiglentReference(self.__instr__, self)
+        self.Trigger = SiglentTrigger(self.__instr__, self)
 
         # For some older device, load additionnal commands that are depecrated in the newest models / firmwares
         if "ACAL" in self.__Config__["Specs"]["LegacyFunctions"]:
