@@ -21,7 +21,22 @@ class SiglentPassFail(SiglentBase):
             Private (0) :
                 None
 
-            Public (7):
+            Public (14):
+                ClearTests :                    Clear tests results
+                EnableBuzzerOnFail :            Enable buzzer
+                DisableBuzzerOnFail :           Disable buzzer
+                CreateRule :                    Create new rule
+                GetFramesResults :              Get results
+                EnableInformationDisplay :      Show infos on screen
+                DisableInformationDisplay :     Hide infos on screen
+                EnablePassFailMode :            Enable mode
+                DisablePassFailMode :           Disable mode
+                EnableStopOnFail :              Enable stop on fail
+                DisableStopOnFail :             Disable stop on fail
+                Runtest :                       Run the test
+                Stoptest :                      Stop the test
+                SetSource :                     Set source
+                SetTolerances :                 Configure tolerances
     """
 
     def ClearTests(self):
@@ -217,7 +232,7 @@ class SiglentPassFail(SiglentBase):
 
     def SetTolerances(self, X, Y):
         """
-        pySDS [PassFail][SetTolerances] : Set the X and Y tolerances for this source
+        pySDS [PassFail][SetTolerances] : Set the X and Y tolerances for this source (Tolerances are expressed as on screen DIV)
 
             Arguments :
                 X : X tolerance (between 0.04 and 4)
