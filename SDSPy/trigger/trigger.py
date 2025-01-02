@@ -7,8 +7,86 @@
 # ============================================================================================================
 from BaseOptionnalClass import SiglentBase
 
+from .IIC import SiglentIIC
+from .SPI import SiglentSPI
+from .CAN import SiglentCAN
+from .UART import SiglentUART
+from .LIN import SiglentLIN
+
 
 class SiglentTrigger(SiglentBase):
+    """
+    pySDS [Files][SiglentTrigger] : Class herited from SiglentBase.
+                                    Store all command related the control of the triggering system
+
+                                    Due to advanced features available, this class group subclasses.
+                                    Thus, it's possible to trigger on serial busses for a specific address or conditions.
+
+        Attributes :
+            Herited from SiglentBase
+            +
+            I2C (SiglentIIC Class), specified for I2C operation
+            SPI (SiglentSPI Class), specified for SPI operation
+            LIN (SiglentLIN Class), specified for LIN operation
+            SERIAL (SiglentUART Class), specified for UART operation
+            CAN (SiglentCAN Class), specified for CAN Operation
+
+        Methods :
+            Private (0) :
+                None
+
+            Public (15): 
+                SetCoupling :   Configure trigger coupling
+                SetDelay :      Configure trigger delay
+                GetDelay :      Get trigger delay
+                SetLevel1 :     Set threshold 1
+                SetLevel2 :     Set threshold 2
+                SetMode :       Set trigger mode
+                GetMode :       Get trigger mode
+                SetSelect :     Set select
+                GetSelect :     Get trigger select
+                SetSlope :      Set trigger slope
+                GetSlope :      Get trigger slope
+                SetWindow :     Set trigger Window
+                GetWindow :     Get trigger Window
+                SetPattern :    Set trigger pattern
+                GetPattern :    Get trigger pattern
+    """
+    def __init__(self, instr, baseclass, number=0):
+        """
+        Overhide the standard class init to store some more advanced data !
+
+        Check SiglentBase doc before !
+
+        Added attributes :
+            Private (0) :
+
+            Public (0) :
+                I2C (SiglentIIC Class), specified for I2C operation
+                SPI (SiglentSPI Class), specified for SPI operation
+                LIN (SiglentLIN Class), specified for LIN operation
+                SERIAL (SiglentUART Class), specified for UART operation
+                CAN (SiglentCAN Class), specified for CAN Operation
+
+        Added methods :
+            Private (0) :
+                None
+
+            Public (0) :
+                None
+        """
+        # Calling default init
+        super().__init__(instr, baseclass, number)
+
+        # Creating new members, which are also herited from the base class
+        self.I2C = SiglentIIC(instr, baseclass, number)
+        self.SPI = SiglentSPI(instr, baseclass, number)
+        self.LIN = SiglentLIN(instr, baseclass, number)
+        self.CAN = SiglentCAN(instr, baseclass, number)
+        self.Serial = SiglentUART(instr, baseclass, number)
+
+        return
+
     #
     #   COUPLING
     #
