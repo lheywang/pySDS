@@ -8,4 +8,17 @@
 from BaseOptionnalClass import SiglentBase
 
 class SiglentCAN(SiglentBase):
-    pass
+    """
+    pySDS [Files][SiglentCAN] : Class herited from SiglentBase.
+                                Store all command related the control of the triggering system for the CAN bus
+
+        Attributes :
+            Herited from SiglentBase
+
+        Methods :
+            Private (0) :
+                None
+
+            Public (15): 
+
+    """

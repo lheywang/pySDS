@@ -8,4 +8,17 @@
 from BaseOptionnalClass import SiglentBase
 
 class SiglentUART(SiglentBase):
-    pass
+    """
+    pySDS [Files][SiglentUART] : Class herited from SiglentBase.
+                                Store all command related the control of the triggering system for the UART bus
+
+        Attributes :
+            Herited from SiglentBase
+
+        Methods :
+            Private (0) :
+                None
+
+            Public (15): 
+
+    """
