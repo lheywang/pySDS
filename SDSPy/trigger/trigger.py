@@ -6,38 +6,6 @@
 #
 # ============================================================================================================
 from BaseOptionnalClass import SiglentBase
-from enum import Enum
-
-# Declaring our enums to prevent the user from sending unwanted values
-TriggerSources = Enum(
-    "Sources",
-    [
-        ("C1", "C1"),
-        ("C2", "C2"),
-        ("C3", "C3"),
-        ("C4", "C4"),
-        ("EX", "EX"),
-        ("EX5", "EX5"),
-        ("LINE", "LINE"),
-    ],
-)
-
-TriggerModes = Enum(
-    "Modes", [("AC", "AC"), ("DC", "DC"), ("HFREJ", "HFREJ"), ("LFREJ", "LFREJ")]
-)
-
-TriggerOperation = Enum(
-    "Triggering Mode",
-    [("AUTO", "AUTO"), ("NORM", "NORM"), ("SINGLE", "SINGLE"), ("STOP", "STOP")],
-)
-
-TriggerEdges = Enum("Edges", [("POS", "POS"), ("NEG", "NEG"), ("WINDOW", "WINDOWS")])
-
-TriggerStatus = Enum("Status", [("X", "X"), ("L", "L"), ("H", "H")])
-
-TriggerPattern = Enum(
-    "Pattern", [("AND", "AND"), ("OR", "OR"), ("NAND", "NAND"), ("NOR", "NOR")]
-)
 
 
 class SiglentTrigger(SiglentBase):
@@ -45,7 +13,7 @@ class SiglentTrigger(SiglentBase):
     #   COUPLING
     #
 
-    def SetCoupling(self, Channel: TriggerSources, Mode: TriggerModes):
+    def SetCoupling(self, Channel, Mode):
         """
         PySDS [Trigger][SetCoupling] :  Configure the source and coupling of the trigger
 
@@ -58,16 +26,10 @@ class SiglentTrigger(SiglentBase):
             Returns :
                 self.GetAllErrors() : List of errors
         """
-        if Channel not in TriggerSources:
-            print(
-                "     [ PySDS ] [ Trigger ] [ SetCoupling ] : Incorrect channel descriptor"
-            )
+        if Channel not in ["C1", "C2", "C3", "C4", "EX", "EX5", "LINE"]:
             return [1, -1]  # Emulate the standard return type
 
-        if Mode not in TriggerModes:
-            print(
-                "     [ PySDS ] [ Trigger ] [ SetCoupling ] : Incorrect mode descriptor"
-            )
+        if Mode not in ["AC", "DC", "HFREJ", "LFREJ"]:
             return [1, -2]  # Emulate the standard return type
 
         self.__instr__.write(f"{Channel}:TRCP {Mode}")
@@ -108,7 +70,7 @@ class SiglentTrigger(SiglentBase):
     #   LEVEL
     #
 
-    def SetLevel1(self, Channel: TriggerSources, Value: float):
+    def SetLevel1(self, Channel, Value: float):
         """
         PySDS [Trigger][SetLevel1] :  Set the level of the specified trigger for a specific channel
 
@@ -122,7 +84,7 @@ class SiglentTrigger(SiglentBase):
         self.__instr__.write(f"{Channel}:TRLV {Value}")
         return self.__baseclass__.GetAllErrors()
 
-    def SetLevel2(self, Channel: TriggerSources, Value: float):
+    def SetLevel2(self, Channel, Value: float):
         """
         PySDS [Trigger][SetLevel2] :  Set the level of the specified trigger for a specific channel
 
@@ -142,7 +104,7 @@ class SiglentTrigger(SiglentBase):
     #   MODE
     #
 
-    def SetMode(self, Mode: TriggerOperation):
+    def SetMode(self, Mode):
         """
         PySDS [Trigger][SetMode] :  Configure the mode of operation of the trigger
 
@@ -152,8 +114,7 @@ class SiglentTrigger(SiglentBase):
             Returns :
                 Float : The number of ms of delay
         """
-        if Mode not in TriggerOperation:
-            print("     [ PySDS ] [ Trigger ] [ SetMode ] : Incorrect mode descriptor")
+        if Mode not in ["AUTO", "NORM", "SINGLE", "STOP", "STOP"]:
             return [1, -1]  # Emulate the standard return type
 
         self.__instr__.write(f"TRMD {Mode}")
@@ -213,7 +174,7 @@ class SiglentTrigger(SiglentBase):
     #   SLOPE
     #
 
-    def SetSlope(self, Channel: TriggerSources, Slope: TriggerEdges):
+    def SetSlope(self, Channel, Slope):
         """
         PySDS [Trigger][SetSlope] :  Configure the 'orientation' of the edge used to trigger.
 
@@ -224,21 +185,15 @@ class SiglentTrigger(SiglentBase):
             Returns :
                 self.GetAllErrors() : List of errors TRSL
         """
-        if Channel not in TriggerSources:
-            print(
-                "     [ PySDS ] [ Trigger ] [ SetSlope ] : Incorrect source descriptor"
-            )
+        if Channel not in ["C1", "C2", "C3", "C4", "EX", "EX5", "LINE"]:
             return [1, -1]  # Emulate the standard return type
-        if Slope not in TriggerEdges:
-            print(
-                "     [ PySDS ] [ Trigger ] [ SetSlope ] : Incorrect slope descriptor"
-            )
+        if Slope not in ["POS", "NEG", "WINDOWS"]:
             return [1, -2]  # Emulate the standard return type
 
         self.__instr__.write(f"{Channel}:TRSL {Slope}")
         return self.__baseclass__.GetAllErrors()
 
-    def GetSlope(self, Channel: TriggerSources):
+    def GetSlope(self, Channel):
         """
         PySDS [Trigger][GetSlope] :  Return the configured slope for the trigger
 
@@ -248,10 +203,7 @@ class SiglentTrigger(SiglentBase):
             Returns :
                 String : The slope used
         """
-        if Channel not in TriggerSources:
-            print(
-                "     [ PySDS ] [ Trigger ] [ SetSlope ] : Incorrect source descriptor"
-            )
+        if Channel not in ["C1", "C2", "C3", "C4", "EX", "EX5", "LINE"]:
             return [1, -1]  # Emulate the standard return type
 
         return self.__instr__.query(f"{Channel}:TRSL?").strip().split(" ")[-1][:3]
@@ -289,7 +241,7 @@ class SiglentTrigger(SiglentBase):
     #   PATTERN
     #
 
-    def SetPattern(self, Sources: list, Status: list, Pattern: TriggerPattern):
+    def SetPattern(self, Sources: list, Status: list, Pattern):
         """
         PySDS [Trigger][SetPattern] :  Configure a triggering pattern (Enable multi channel triggering)
 
@@ -303,34 +255,19 @@ class SiglentTrigger(SiglentBase):
         """
         for Source in Sources:
             if Source not in ["C1", "C2", "C3", "C4"]:
-                print(
-                    "     [ PySDS ] [ Trigger ] [ SetPattern ] : At least one incorrect channel was found"
-                )
                 return [1, -1]  # Emulate the standard return type
 
         for State in Status:
-            if State not in TriggerStatus:
-                print(
-                    "     [ PySDS ] [ Trigger ] [ SetPattern ] : At least one incorrect status was found"
-                )
+            if State not in ["X", "L", "H"]:
                 return [1, -2]  # Emulate the standard return type
 
-        if Pattern not in TriggerPattern:
-            print(
-                "     [ PySDS ] [ Trigger ] [ SetPattern ] : At least one incorrect status was found"
-            )
+        if Pattern not in ["AND", "OR", "NAND", "NOR"]:
             return [1, -3]  # Emulate the standard return type
 
         if len(Sources) != len(Status):
-            print(
-                "     [ PySDS ] [ Trigger ] [ SetPattern ] : The list of Sources and State does not match in lengh"
-            )
             return [1, -3]  # Emulate the standard return type
 
         if len(Sources) < 1:
-            print(
-                "     [ PySDS ] [ Trigger ] [ SetPattern ] : Not enough settings passed"
-            )
             return [1, -3]  # Emulate the standard return type
 
         cmd = ""

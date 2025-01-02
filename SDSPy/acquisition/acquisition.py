@@ -74,9 +74,6 @@ class SiglentAcquisition(SiglentBase):
         """
 
         if Method not in ["SAMPLING", "PEAK_DETECT", "AVERAGE", "HIGH_RES"]:
-            print(
-                "     [ PySDS ] [ Acquisition ] [ ConfigureAquireMethod ] : Invalid aquisition way provided"
-            )
             return -2
 
         self.__instr__.write(f"ACQW {Method},{AverageNumber}")
@@ -186,9 +183,6 @@ class SiglentAcquisition(SiglentBase):
                 self.GetAllErrors()
         """
         if Method not in ["ON", "OFF"]:
-            print(
-                "     [ PySDS ] [ Acquisition ] [ SetInterpolationMethod ] : Invalid interpolation method provided"
-            )
             return -2
 
         self.__instr__.write(f"SXSA {Method}")

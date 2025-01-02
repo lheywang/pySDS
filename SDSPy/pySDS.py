@@ -412,9 +412,11 @@ class PySDS:
 
             Returns :
                 self.GetAllErrors() returns (List of errors)
+                or
+                -1 : Invalid preset ID
         """
         if PresetNumber > 20 or PresetNumber < 0:
-            print("     [ PySDS ] [ RecallPreset ] : Invalid preset number")
+            return [1, -1]
 
         self.__instr__.write(f"*RCL {PresetNumber}")
         return self.GetAllErrors()
@@ -429,9 +431,11 @@ class PySDS:
 
             Returns :
                 self.GetAllErrors() returns (List of errors)
+                or
+                -1 : Invalid preset ID
         """
         if PresetNumber > 20 or PresetNumber < 1:
-            print("     [ PySDS ] [ SavePresent ] : Invalid preset number")
+            return [1, -1]
 
         self.__instr__.write(f"*SAV {PresetNumber}")
         return self.GetAllErrors()

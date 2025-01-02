@@ -185,7 +185,6 @@ class SCPIGenerics(SiglentBase):
         """
 
         if value > 255 or value < 0:
-            print("     [ PySDS ] [ SetESE ] : Incorrect value passed !")
             return -1
 
         self.__instr__.write(f"*ESE {value}")
@@ -203,7 +202,6 @@ class SCPIGenerics(SiglentBase):
         """
 
         if value > 128 or value < 0:
-            print("     [ PySDS ] [ SetESR ] : Incorrect value passed !")
             return -1
 
         self.__instr__.write(f"*ESR {value}")
@@ -234,7 +232,6 @@ class SCPIGenerics(SiglentBase):
         """
 
         if value > 256 or value < 0:
-            print("     [ PySDS ] [ SetSRE ] : Incorrect value passed !")
             return -1
 
         self.__instr__.write(f"*SRE {value}")
