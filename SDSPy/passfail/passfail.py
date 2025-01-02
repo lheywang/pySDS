@@ -224,7 +224,7 @@ class SiglentPassFail(SiglentBase):
                 or
                 -1 : Invalid channel descriptor
         """
-        if type(Channel) is not type(SiglentChannel):
+        if type(Channel) is not SiglentChannel:
             return [1, -1]
 
         self.__instr__.write(f"PFSC {Channel.__channel__}")

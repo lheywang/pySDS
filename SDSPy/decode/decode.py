@@ -149,13 +149,9 @@ class SiglentDecode(SiglentBase):
         """
 
         # parameters check
-        if (type(SCL) is not type(SiglentChannel)) and (
-            type(SCL) is not type(SiglentDChannel)
-        ):
+        if (type(SCL) is not SiglentChannel) and (type(SCL) is not SiglentDChannel):
             return [1, -1]
-        if (type(SDA) is not type(SiglentChannel)) and (
-            type(SDA) is not type(SiglentDChannel)
-        ):
+        if (type(SDA) is not SiglentChannel) and (type(SDA) is not SiglentDChannel):
             return [1, -2]
         if Display not in ["ON", "OFF"]:
             return [1, -3]
@@ -168,11 +164,11 @@ class SiglentDecode(SiglentBase):
         cmd = f"B{Bus}:DCIC "
 
         cmd += f"SCL,{SCL.__channel__}"
-        if type(SCL) == type(SiglentChannel):
+        if type(SCL) == SiglentChannel:
             cmd += f",SCLT,{SCLT}"
 
         cmd += f",SDA,{SDA.__channel__}"
-        if type(SDA) == type(SiglentChannel):
+        if type(SDA) == SiglentChannel:
             cmd += f",SDAT,{SDAT}"
 
         cmd += f",DIS,{Display},RW,{RW}"
@@ -240,21 +236,13 @@ class SiglentDecode(SiglentBase):
                 -10 :   Invalid display mode
         """
         # parameters check
-        if (type(CLK) is not type(SiglentChannel)) and (
-            type(CLK) is not type(SiglentDChannel)
-        ):
+        if (type(CLK) is not SiglentChannel) and (type(CLK) is not SiglentDChannel):
             return [1, -1]
-        if (type(MOSI) is not type(SiglentChannel)) and (
-            type(MOSI) is not type(SiglentDChannel)
-        ):
+        if (type(MOSI) is not SiglentChannel) and (type(MOSI) is not SiglentDChannel):
             return [1, -2]
-        if (type(MISO) is not type(SiglentChannel)) and (
-            type(MISO) is not type(SiglentDChannel)
-        ):
+        if (type(MISO) is not SiglentChannel) and (type(MISO) is not SiglentDChannel):
             return [1, -3]
-        if (type(CS) is not type(SiglentChannel)) and (
-            type(CS) is not type(SiglentDChannel)
-        ):
+        if (type(CS) is not SiglentChannel) and (type(CS) is not SiglentDChannel):
             return [1, -4]
         if CSMode not in ["CS", "NCS", "TIMEOUT"]:
             return [1, -5]
@@ -273,24 +261,24 @@ class SiglentDecode(SiglentBase):
         cmd = f"B{Bus}:DCSP ,MISO,{MISO.__channel__},MOSI,{MOSI.__channel__}"
 
         cmd += f"CLK,{CLK.__channel__}"
-        if type(CLK) == type(SiglentChannel):
+        if type(CLK) == SiglentChannel:
             cmd += f",CLKT,{CLKT}"
         cmd += f",MISO,{MISO.__channel__}"
-        if type(MISO) == type(SiglentChannel):
+        if type(MISO) == SiglentChannel:
             cmd += f",MISOT,{MISOT}"
         cmd += f",MOSI,{MOSI.__channel__}"
-        if type(MOSI) == type(SiglentChannel):
+        if type(MOSI) == SiglentChannel:
             cmd += f",MOSIT,{MOSIT}"
 
         # Acting depending the chip select mode
         if CSMode == "CS":
             cmd += f",CS,{CS.__channel__}"
-            if type(CST) == type(SiglentChannel):
+            if type(CST) == SiglentChannel:
                 cmd += f",CST,{CST}"
 
         elif CSMode == "NCS":
             cmd += f",NCS,{CS.__channel__}"
-            if type(CST) == type(SiglentChannel):
+            if type(CST) == SiglentChannel:
                 cmd += f",NCST,{CST}"
 
         elif CSMode == "TIMEOUT":
@@ -356,13 +344,9 @@ class SiglentDecode(SiglentBase):
                 -10 :   Invalid baud rate
         """
         # parameters check
-        if (type(RX) is not type(SiglentChannel)) and (
-            type(RX) is not type(SiglentDChannel)
-        ):
+        if (type(RX) is not SiglentChannel) and (type(RX) is not SiglentDChannel):
             return [1, -1]
-        if (type(TX) is not type(SiglentChannel)) and (
-            type(TX) is not type(SiglentDChannel)
-        ):
+        if (type(TX) is not SiglentChannel) and (type(TX) is not SiglentDChannel):
             return [1, -2]
 
         if Parity not in ["NONE", "ODD", "EVEN"]:
@@ -387,11 +371,11 @@ class SiglentDecode(SiglentBase):
         cmd = f"B{Bus}:DCUT "
 
         cmd += f",RX,{RX.__channel__}"
-        if type(RX) == type(SiglentChannel):
+        if type(RX) == SiglentChannel:
             cmd += f",RXT,{RXT}"
 
         cmd += f",TX,{TX.__channel__}"
-        if type(TX) == type(SiglentChannel):
+        if type(TX) == SiglentChannel:
             cmd += f",TXT,{TXT}"
 
         cmd += f",BAUD,{Baud},DLEN,{DLEN},PAR,{Parity},STOP,{Stop},POL,{Polarity},BIT,{Bit},DIS,{Display}"
@@ -434,13 +418,9 @@ class SiglentDecode(SiglentBase):
                 -6 :    Invalid BAUD RATE
         """
         # parameters check
-        if (type(CANH) is not type(SiglentChannel)) and (
-            type(CANH) is not type(SiglentDChannel)
-        ):
+        if (type(CANH) is not SiglentChannel) and (type(CANH) is not SiglentDChannel):
             return [1, -1]
-        if (type(CANL) is not type(SiglentChannel)) and (
-            type(CANL) is not type(SiglentDChannel)
-        ):
+        if (type(CANL) is not SiglentChannel) and (type(CANL) is not SiglentDChannel):
             return [1, -2]
 
         if SRC not in ["CAN_H", "CAN_L", "SUB_L"]:
@@ -457,11 +437,11 @@ class SiglentDecode(SiglentBase):
         cmd = f"B{Bus}:DCCN "
 
         cmd += f",CANH,{CANH.__channel__}"
-        if type(CANH) == type(SiglentChannel):
+        if type(CANH) == SiglentChannel:
             cmd += f",CANHT,{CANHT}"
 
         cmd += f",CANL,{CANL.__channel__}"
-        if type(CANL) == type(SiglentChannel):
+        if type(CANL) == SiglentChannel:
             cmd += f",CANLT,{CANLT}"
 
         cmd += f",BAUD,{Baud},SRC,{SRC},DIS,{Display}"
@@ -497,9 +477,7 @@ class SiglentDecode(SiglentBase):
                 -4 :    Invalid BAUD RATE
         """
         # parameters check
-        if (type(SRC) is not type(SiglentChannel)) and (
-            type(SRC) is not type(SiglentDChannel)
-        ):
+        if (type(SRC) is not SiglentChannel) and (type(SRC) is not SiglentDChannel):
             return [1, -1]
 
         if Display not in ["ON", "OFF"]:
@@ -514,7 +492,7 @@ class SiglentDecode(SiglentBase):
         cmd = f"B{Bus}:DCLN "
 
         cmd += f",SRC,{SRC.__channel__}"
-        if type(SRC) == type(SiglentChannel):
+        if type(SRC) == SiglentChannel:
             cmd += f",SRCT,{SRCT}"
 
         cmd += f",BAUD,{Baud},DIS,{Display}"

@@ -115,9 +115,9 @@ class SiglentMeasure(SiglentBase):
             "SKEW",
         ]:
             return [1, -1]
-        if type(Channel1) is not type(SiglentChannel):
+        if type(Channel1) is not SiglentChannel:
             return [1, -2]
-        if type(Channel2) is not type(SiglentChannel):
+        if type(Channel2) is not SiglentChannel:
             return [1, -3]
 
         self.__instr__.write(
@@ -167,9 +167,9 @@ class SiglentMeasure(SiglentBase):
             "SKEW",
         ]:
             return -1
-        if type(Channel1) is not type(SiglentChannel):
+        if type(Channel1) is not SiglentChannel:
             return -2
-        if type(Channel2) is not type(SiglentChannel):
+        if type(Channel2) is not SiglentChannel:
             return -3
 
         ret = (
@@ -263,7 +263,7 @@ class SiglentMeasure(SiglentBase):
             "ALL",
         ]:
             return [1, -1]
-        if type(Channel) is not type(SiglentChannel):
+        if type(Channel) is not SiglentChannel:
             return [1, -2]
 
         self.__instr__.write(f"PACU {Type},{Channel.__channel__}")
@@ -344,7 +344,7 @@ class SiglentMeasure(SiglentBase):
             "ALL",
         ]:
             return {"error": -1}
-        if type(Channel) is not type(SiglentChannel):
+        if type(Channel) is not SiglentChannel:
             return {"error": -2}
 
         out = dict()
