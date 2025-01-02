@@ -21,7 +21,21 @@ class SiglentMeasure(SiglentBase):
             Private (0) :
                 None
 
-            Public (7):
+            Public (14):
+                GetSignalFrequency :            Get triggering signal frequency
+                SetDelayMeasure :               Configure delay measure
+                GetDelayMeasure :               Read delay measure
+                SetMeasure :                    Configure measure
+                GetMeasure :                    Read measure
+                EnableMeasureStatistics :       Enable statistics
+                DisableMeasureStatistics :      Disable statistics
+                ResetMeasureStatistics :        Reset statistics
+                RemoveMeasures :                Remove all measures
+                GetStatsMeasure :               Read measures (with statistics)
+                EnableMeasureGating :           Enable measure gating (restraint the measure to a part of the waveform)
+                DisableMeasureGating :          Disable measure gating
+                SetGatingLowerLimit :           Configure lower limit for gating
+                SetGatingHigherLimit :          Configure higher limit for gating
     """
 
     def GetSignalFrequency(self):
