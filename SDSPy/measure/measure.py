@@ -5,8 +5,8 @@
 # Base file for the measure class
 #
 # ============================================================================================================
-from BaseOptionnalClass import SiglentBase
-from channel import SiglentChannel
+from ..BaseOptionnalClass import SiglentBase
+from ..channel import SiglentChannel
 
 
 class SiglentMeasure(SiglentBase):

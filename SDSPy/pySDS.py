@@ -16,24 +16,24 @@ from warnings import warn
 import pyvisa  # type: ignore
 
 # Others files
-from acquisition import SiglentAcquisition
-from channel import SiglentChannel
-from communication import SiglentCommunication
-from cursor import SiglentCursor
-from decode import SiglentDecode
-from deprecated_functions import ACAL, DATE, COUNTER
-from digital import SiglentDigital
-from display import SiglentScreen
-from Files import SiglentFiles
-from generics import SCPIGenerics
-from history import SiglentHistory
-from maths import SiglentMaths
-from measure import SiglentMeasure
-from passfail import SiglentPassFail
-from references import SiglentReference
-from timebase import SiglentTimebase
-from trigger import SiglentTrigger
-from waveform import SiglentWaveform
+from .acquisition import SiglentAcquisition
+from .channel import SiglentChannel
+from .communication import SiglentCommunication
+from .cursor import SiglentCursor
+from .decode import SiglentDecode
+from .deprecated_functions import ACAL, DATE, COUNTER
+from .digital import SiglentDigital
+from .display import SiglentScreen
+from .Files import SiglentFiles
+from .generics import SCPIGenerics
+from .history import SiglentHistory
+from .maths import SiglentMaths
+from .measure import SiglentMeasure
+from .passfail import SiglentPassFail
+from .references import SiglentReference
+from .timebase import SiglentTimebase
+from .trigger import SiglentTrigger
+from .waveform import SiglentWaveform
 
 
 class PySDS:
@@ -150,6 +150,7 @@ class PySDS:
 
         # Then, initialize all of the subclass
         self.Acquistion = SiglentAcquisition(self.__instr__, self)
+        """Acquisition class pdoc.acquisition.SiglentAcquisition""" # to correct
         self.Autotest = SiglentPassFail(self.__instr__, self)
         self.Communication = SiglentCommunication(self.__instr__, self)
         self.Cursor = SiglentCursor(self.__instr__, self)

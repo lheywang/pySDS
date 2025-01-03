@@ -5,7 +5,7 @@
 # Base file for the timebase class
 #
 # ============================================================================================================
-from BaseOptionnalClass import SiglentBase
+from ..BaseOptionnalClass import SiglentBase
 
 
 class SiglentTimebase(SiglentBase):

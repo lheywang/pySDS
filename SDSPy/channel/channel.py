@@ -5,7 +5,7 @@
 # Base file for the channel class
 #
 # ============================================================================================================
-from BaseOptionnalClass import SiglentBase
+from ..BaseOptionnalClass import SiglentBase
 
 
 class SiglentChannel(SiglentBase):

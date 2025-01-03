@@ -5,7 +5,7 @@
 # Base file for the digital class
 #
 # ============================================================================================================
-from BaseOptionnalClass import SiglentBase
+from ..BaseOptionnalClass import SiglentBase
 from .digitalchannel import SiglentDChannel
 
 

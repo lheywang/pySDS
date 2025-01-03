@@ -5,7 +5,7 @@
 # Base file for the trigger class
 #
 # ============================================================================================================
-from BaseOptionnalClass import SiglentBase
+from ..BaseOptionnalClass import SiglentBase
 
 from .IIC import SiglentIIC
 from .SPI import SiglentSPI

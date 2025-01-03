@@ -5,7 +5,7 @@
 # Base file for the screen management class
 #
 # ============================================================================================================
-from BaseOptionnalClass import SiglentBase
+from ..BaseOptionnalClass import SiglentBase
 
 
 class SiglentScreen(SiglentBase):
