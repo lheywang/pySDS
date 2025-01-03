@@ -1,0 +1,21 @@
+[Infos]
+Brand = "Siglent"
+Device = "SDS1104X-U"
+
+[Specs]
+Channel = 4
+ChannelColor = ["Red", "Yellow", "Blue", "Green"]
+LegacyFunctions = []
+BlacklistedFUnctions = []
+impedance = [1000000]
+
+[Generator]
+Enabled = false
+Channel = 1
+
+[MixedSignal]
+Enabled = false
+Channel = 16
+
+[PowerAnalyser]
+Enabled = false

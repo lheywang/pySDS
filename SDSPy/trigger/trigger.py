@@ -5,51 +5,96 @@
 # Base file for the trigger class
 #
 # ============================================================================================================
+from BaseOptionnalClass import SiglentBase
 
-from enum import Enum
-
-# Declaring our enums to prevent the user from sending unwanted values
-TriggerSources = Enum(
-    "Sources",
-    [
-        ("C1", "C1"),
-        ("C2", "C2"),
-        ("C3", "C3"),
-        ("C4", "C4"),
-        ("EX", "EX"),
-        ("EX5", "EX5"),
-        ("LINE", "LINE"),
-    ],
-)
-
-TriggerModes = Enum(
-    "Modes", [("AC", "AC"), ("DC", "DC"), ("HFREJ", "HFREJ"), ("LFREJ", "LFREJ")]
-)
-
-TriggerOperation = Enum(
-    "Triggering Mode",
-    [("AUTO", "AUTO"), ("NORM", "NORM"), ("SINGLE", "SINGLE"), ("STOP", "STOP")],
-)
-
-TriggerEdges = Enum("Edges", [("POS", "POS"), ("NEG", "NEG"), ("WINDOW", "WINDOWS")])
-
-TriggerStatus = Enum("Status", [("X", "X"), ("L", "L"), ("H", "H")])
-
-TriggerPattern = Enum(
-    "Pattern", [("AND", "AND"), ("OR", "OR"), ("NAND", "NAND"), ("NOR", "NOR")]
-)
+from .IIC import SiglentIIC
+from .SPI import SiglentSPI
+from .CAN import SiglentCAN
+from .UART import SiglentUART
+from .LIN import SiglentLIN
 
 
-class SiglentTrigger:
-    def __init__(self, instr, baseclass):
-        self.__instr__ = instr
-        self.__baseclass__ = baseclass
+class SiglentTrigger(SiglentBase):
+    """
+    pySDS [Files][SiglentTrigger] : Class herited from SiglentBase.
+                                    Store all command related the control of the triggering system
+
+                                    Due to advanced features available, this class group subclasses.
+                                    Thus, it's possible to trigger on serial busses for a specific address or conditions.
+
+    WARNING : Advanced features are linked to bus decoding ability, and can sometimes interfer between their configurations !
+
+        Attributes :
+            Herited from SiglentBase
+            +
+            I2C (SiglentIIC Class), specified for I2C operation
+            SPI (SiglentSPI Class), specified for SPI operation
+            LIN (SiglentLIN Class), specified for LIN operation
+            SERIAL (SiglentUART Class), specified for UART operation
+            CAN (SiglentCAN Class), specified for CAN Operation
+
+        Methods :
+            Private (0) :
+                None
+
+            Public (15):
+                SetCoupling :   Configure trigger coupling
+                SetDelay :      Configure trigger delay
+                GetDelay :      Get trigger delay
+                SetLevel1 :     Set threshold 1
+                SetLevel2 :     Set threshold 2
+                SetMode :       Set trigger mode
+                GetMode :       Get trigger mode
+                SetSelect :     Set select
+                GetSelect :     Get trigger select
+                SetSlope :      Set trigger slope
+                GetSlope :      Get trigger slope
+                SetWindow :     Set trigger Window
+                GetWindow :     Get trigger Window
+                SetPattern :    Set trigger pattern
+                GetPattern :    Get trigger pattern
+    """
+
+    def __init__(self, instr, baseclass, number=0):
+        """
+        Overhide the standard class init to store some more advanced data !
+
+        Check SiglentBase doc before !
+
+        Added attributes :
+            Private (0) :
+
+            Public (0) :
+                I2C (SiglentIIC Class), specified for I2C operation
+                SPI (SiglentSPI Class), specified for SPI operation
+                LIN (SiglentLIN Class), specified for LIN operation
+                SERIAL (SiglentUART Class), specified for UART operation
+                CAN (SiglentCAN Class), specified for CAN Operation
+
+        Added methods :
+            Private (0) :
+                None
+
+            Public (0) :
+                None
+        """
+        # Calling default init
+        super().__init__(instr, baseclass, number)
+
+        # Creating new members, which are also herited from the base class
+        self.I2C = SiglentIIC(instr, baseclass, number)
+        self.SPI = SiglentSPI(instr, baseclass, number)
+        self.LIN = SiglentLIN(instr, baseclass, number)
+        self.CAN = SiglentCAN(instr, baseclass, number)
+        self.Serial = SiglentUART(instr, baseclass, number)
+
+        return
 
     #
     #   COUPLING
     #
 
-    def SetCoupling(self, Channel: TriggerSources, Mode: TriggerModes):
+    def SetCoupling(self, Channel, Mode):
         """
         PySDS [Trigger][SetCoupling] :  Configure the source and coupling of the trigger
 
@@ -62,16 +107,10 @@ class SiglentTrigger:
             Returns :
                 self.GetAllErrors() : List of errors
         """
-        if Channel not in TriggerSources:
-            print(
-                "     [ PySDS ] [ Trigger ] [ SetCoupling ] : Incorrect channel descriptor"
-            )
+        if Channel not in ["C1", "C2", "C3", "C4", "EX", "EX5", "LINE"]:
             return [1, -1]  # Emulate the standard return type
 
-        if Mode not in TriggerModes:
-            print(
-                "     [ PySDS ] [ Trigger ] [ SetCoupling ] : Incorrect mode descriptor"
-            )
+        if Mode not in ["AC", "DC", "HFREJ", "LFREJ"]:
             return [1, -2]  # Emulate the standard return type
 
         self.__instr__.write(f"{Channel}:TRCP {Mode}")
@@ -112,7 +151,7 @@ class SiglentTrigger:
     #   LEVEL
     #
 
-    def SetLevel1(self, Channel: TriggerSources, Value: float):
+    def SetLevel1(self, Channel, Value: float):
         """
         PySDS [Trigger][SetLevel1] :  Set the level of the specified trigger for a specific channel
 
@@ -126,7 +165,7 @@ class SiglentTrigger:
         self.__instr__.write(f"{Channel}:TRLV {Value}")
         return self.__baseclass__.GetAllErrors()
 
-    def SetLevel2(self, Channel: TriggerSources, Value: float):
+    def SetLevel2(self, Channel, Value: float):
         """
         PySDS [Trigger][SetLevel2] :  Set the level of the specified trigger for a specific channel
 
@@ -146,7 +185,7 @@ class SiglentTrigger:
     #   MODE
     #
 
-    def SetMode(self, Mode: TriggerOperation):
+    def SetMode(self, Mode):
         """
         PySDS [Trigger][SetMode] :  Configure the mode of operation of the trigger
 
@@ -156,8 +195,7 @@ class SiglentTrigger:
             Returns :
                 Float : The number of ms of delay
         """
-        if Mode not in TriggerOperation:
-            print("     [ PySDS ] [ Trigger ] [ SetMode ] : Incorrect mode descriptor")
+        if Mode not in ["AUTO", "NORM", "SINGLE", "STOP", "STOP"]:
             return [1, -1]  # Emulate the standard return type
 
         self.__instr__.write(f"TRMD {Mode}")
@@ -217,7 +255,7 @@ class SiglentTrigger:
     #   SLOPE
     #
 
-    def SetSlope(self, Channel: TriggerSources, Slope: TriggerEdges):
+    def SetSlope(self, Channel, Slope):
         """
         PySDS [Trigger][SetSlope] :  Configure the 'orientation' of the edge used to trigger.
 
@@ -228,21 +266,15 @@ class SiglentTrigger:
             Returns :
                 self.GetAllErrors() : List of errors TRSL
         """
-        if Channel not in TriggerSources:
-            print(
-                "     [ PySDS ] [ Trigger ] [ SetSlope ] : Incorrect source descriptor"
-            )
+        if Channel not in ["C1", "C2", "C3", "C4", "EX", "EX5", "LINE"]:
             return [1, -1]  # Emulate the standard return type
-        if Slope not in TriggerEdges:
-            print(
-                "     [ PySDS ] [ Trigger ] [ SetSlope ] : Incorrect slope descriptor"
-            )
+        if Slope not in ["POS", "NEG", "WINDOWS"]:
             return [1, -2]  # Emulate the standard return type
 
         self.__instr__.write(f"{Channel}:TRSL {Slope}")
         return self.__baseclass__.GetAllErrors()
 
-    def GetSlope(self, Channel: TriggerSources):
+    def GetSlope(self, Channel):
         """
         PySDS [Trigger][GetSlope] :  Return the configured slope for the trigger
 
@@ -252,10 +284,7 @@ class SiglentTrigger:
             Returns :
                 String : The slope used
         """
-        if Channel not in TriggerSources:
-            print(
-                "     [ PySDS ] [ Trigger ] [ SetSlope ] : Incorrect source descriptor"
-            )
+        if Channel not in ["C1", "C2", "C3", "C4", "EX", "EX5", "LINE"]:
             return [1, -1]  # Emulate the standard return type
 
         return self.__instr__.query(f"{Channel}:TRSL?").strip().split(" ")[-1][:3]
@@ -293,7 +322,7 @@ class SiglentTrigger:
     #   PATTERN
     #
 
-    def SetPattern(self, Sources: list, Status: list, Pattern: TriggerPattern):
+    def SetPattern(self, Sources: list, Status: list, Pattern):
         """
         PySDS [Trigger][SetPattern] :  Configure a triggering pattern (Enable multi channel triggering)
 
@@ -307,34 +336,19 @@ class SiglentTrigger:
         """
         for Source in Sources:
             if Source not in ["C1", "C2", "C3", "C4"]:
-                print(
-                    "     [ PySDS ] [ Trigger ] [ SetPattern ] : At least one incorrect channel was found"
-                )
                 return [1, -1]  # Emulate the standard return type
 
         for State in Status:
-            if State not in TriggerStatus:
-                print(
-                    "     [ PySDS ] [ Trigger ] [ SetPattern ] : At least one incorrect status was found"
-                )
+            if State not in ["X", "L", "H"]:
                 return [1, -2]  # Emulate the standard return type
 
-        if Pattern not in TriggerPattern:
-            print(
-                "     [ PySDS ] [ Trigger ] [ SetPattern ] : At least one incorrect status was found"
-            )
+        if Pattern not in ["AND", "OR", "NAND", "NOR"]:
             return [1, -3]  # Emulate the standard return type
 
         if len(Sources) != len(Status):
-            print(
-                "     [ PySDS ] [ Trigger ] [ SetPattern ] : The list of Sources and State does not match in lengh"
-            )
             return [1, -3]  # Emulate the standard return type
 
         if len(Sources) < 1:
-            print(
-                "     [ PySDS ] [ Trigger ] [ SetPattern ] : Not enough settings passed"
-            )
             return [1, -3]  # Emulate the standard return type
 
         cmd = ""

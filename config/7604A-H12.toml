@@ -1,0 +1,22 @@
+[Infos]
+Brand = "Siglent"
+Device = "SDS7604A-H12"
+
+[Specs]
+Channels = 4
+ChannelColor = ["Red", "Yellow", "Blue", "Green"]
+LegacyFunctions = []
+BlacklistedFUnctions = []
+impedance = [1000000]
+
+[Generator]
+Enabled = false
+Channel = 1
+
+[MixedSignal]
+Enabled = false
+Channel = 16
+
+[PowerAnalyser]
+Enabled = false
+

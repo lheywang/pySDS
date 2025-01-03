@@ -1,0 +1,22 @@
+[Infos]
+Brand = "Siglent"
+Device = "SDS6208L"
+
+[Specs]
+Channels = 8
+ChannelColor = ["Yellow", "Pink", "Light Blue", "Green", "Violet", "Blue", "Red", "Orange"]
+LegacyFunctions = []
+BlacklistedFUnctions = []
+impedance = [1000000]
+
+[Generator]
+Enabled = false
+Channel = 1
+
+[MixedSignal]
+Enabled = false
+Channel = 16
+
+[PowerAnalyser]
+Enabled = false
+

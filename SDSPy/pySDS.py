@@ -10,21 +10,30 @@
 import ipaddress
 import tomllib
 from datetime import datetime
+from warnings import warn
 
 # Poetry managed lbraries
 import pyvisa  # type: ignore
 
 # Others files
-import acquisition
-import trigger
-import communication
-import channel
-import cursor
-import autotest
-import files
-import maths
-import screen
-import counter
+from acquisition import SiglentAcquisition
+from channel import SiglentChannel
+from communication import SiglentCommunication
+from cursor import SiglentCursor
+from decode import SiglentDecode
+from deprecated_functions import ACAL, DATE, COUNTER
+from digital import SiglentDigital
+from display import SiglentScreen
+from Files import SiglentFiles
+from generics import SCPIGenerics
+from history import SiglentHistory
+from maths import SiglentMaths
+from measure import SiglentMeasure
+from passfail import SiglentPassFail
+from references import SiglentReference
+from timebase import SiglentTimebase
+from trigger import SiglentTrigger
+from waveform import SiglentWaveform
 
 
 class PySDS:
@@ -32,11 +41,38 @@ class PySDS:
     PySDS [class] : Parent class of the PySDS package.
                     Handle actually all of basic SCPI commands, and call subclasses for some advanced functionnalities !
 
+        Attributes :
+            Private :
+                __ip__ :            ip of the device. Used internally to check it's validity.
+                __rm__ :            pyvisa ressource manager
+                __instr__ :         Handle to the pyvisa object to interract with the device
+                __ConfigFile__ :    Configuration file used for the scope.
+                __Config__ :        Parsed configuration toml file
+                __Generics__ :      SCPIGenerics class. Used for low level interraction with the device.
+
+            Public :
+                ** Standard variables **
+                DeviceOpenned :     Get a non 0 value if the device was openned correctly. Otherwise, take 0
+                model :             Device model, parsed from *IDN command
+                SN :                Device SN, parsed from *IDN command
+                Firmware :          Device firmware revision, parsed from *IDN command
+
+                ** SCPI Variables **
+                Channel :           A list of channel presents on the device. Each is it's own SiglentChannel class.
+                Trigger :           A SiglentTrigger class
+
+
+
+        Methods :
+            Private :
+
+            Public :
+
         Parents :
             None
 
         Subclass :
-            Channel
+            None
 
     """
 
@@ -60,6 +96,7 @@ class PySDS:
             print(
                 "     [ PySDS ] [ Init ] : Incorrect IP was passed to the constructor"
             )
+            self.DeviceOpenned = 0
             return
 
         try:
@@ -69,6 +106,7 @@ class PySDS:
             print(
                 "     [ PySDS ] [ Init ] : Unable to access to the device. Check if the IP is right, or if you can ping it !"
             )
+            self.DeviceOpenned = 0
             return
 
         # Then, request for the IDN command.
@@ -79,6 +117,7 @@ class PySDS:
         # Check if the brand is the right one, or this library isn't going to work !
         if IDN[0].find("Siglent") == -1:
             print("     [ PySDS ] [ Init ] : Found a non Siglent Device on this IP !")
+            self.DeviceOpenned = 0
             return
 
         # Parse some different fields
@@ -90,25 +129,71 @@ class PySDS:
         # First, replace any space in the name with a "-" to ensure compatibility within different OS
         self.model = self.model.replace(" ", "-")
 
-        # Load the right configuration file
-        self.__ConfigFile__ = self.model + ".toml"
+        # Load the right configuration file without the SDS in front
+        self.__ConfigFile__ = self.model[3:] + ".toml"
 
         self.__Config__ = None
         with open(f"config/{self.__ConfigFile__}", "rb") as f:
             self.__Config__ = tomllib.load(f)
 
+        # Create a generic class, for internal usage only
+        self.__Generics__ = SCPIGenerics(self.__instr__, self)
+
         # Now, initialize some parameters from the configuration file
-        for Channel in range(self.__Config__["Specs"]["Channel"]):
-            pass
-            # Init here some standard channels
-            # Make sure to load the settings direcly !
+        self.Channel = []
+        for index in range(self.__Config__["Specs"]["Channel"]):
+            self.Channel.append(
+                SiglentChannel(
+                    self.__instr__, self, f"C{index}", self.__Config__["impedance"]
+                )
+            )
 
         # Then, initialize all of the subclass
-        self.Trigger = trigger.SiglentTrigger(self.__instr__, 
-                                              self)
+        self.Acquistion = SiglentAcquisition(self.__instr__, self)
+        self.Autotest = SiglentPassFail(self.__instr__, self)
+        self.Communication = SiglentCommunication(self.__instr__, self)
+        self.Cursor = SiglentCursor(self.__instr__, self)
+        self.Decode = SiglentDecode(self.__instr__, self)
+        self.Digital = SiglentDigital(self.__instr__, self)
+        self.Display = SiglentScreen(self.__instr__, self)
+        self.Files = SiglentFiles(self.__instr__, self)
+        self.History = SiglentHistory(self.__instr__, self)
+        self.Maths = SiglentMaths(self.__instr__, self)
+        self.Measure = SiglentMeasure(self.__instr__, self)
+        self.Reference = SiglentReference(self.__instr__, self)
+        self.Trigger = SiglentTrigger(self.__instr__, self)
+        self.Timebase = SiglentTimebase(self.__instr__, self)
+        self.Waveform = SiglentWaveform(self.__instr__, self)
+
+        # For some older device, load additionnal commands that are depecrated in the newest models / firmwares
+        if "ACAL" in self.__Config__["Specs"]["LegacyFunctions"]:
+            self.Calibration = ACAL(self.__instr__, self)
+
+        if "DATE" in self.__Config__["Specs"]["LegacyFunctions"]:
+            self.Date = DATE(self.__instr__, self)
+
+        if "COUNTER" in self.__Config__["Specs"]["LegacyFunctions"]:
+            self.Counter = COUNTER(self.__instr__, self)
 
         # Then, load default settings by sending request to get the actual state of the device
 
+        # Check for support of depecrated commands !
+        # ACAL (SDS2000X and SDS1000CFL)
+        # AAUTS (Up to SDS1000X)
+        # COUNTER (SDS1000 non SPO)
+        # CSV SAVE (All but different formats...)
+        # DATE (SDS2000X and SDS1000CFL)
+        # FFTZOOM (Up to SDS1000X)
+        # FILTER (SDS1000 non SPO)
+        # FILT SET (SDS1000 non SPO)
+        # PEAK DETECT (Up to SDS1000X)
+        # PFCT (Up to SDS1000X)
+        # PERS (Up to SDS1000X)
+        # RECALL (Up to SDS1000X)
+        # REFSET (Up to SDS1000X)
+        # VPOS (Up to SDS1000X)
+
+        self.DeviceOpenned = 1
         return
 
     def __repr__(self):
@@ -239,289 +324,30 @@ class PySDS:
         Ret = self.__instr__.query("*CAL?")
         return int(Ret.strip().split(" ")[-1])
 
-    def EnableAutomaticCalibration(self):
-        """
-        PySDS [EnableAutomaticCalibration] :    Enable automatic calibration of the device. (When ? )
+    #
+    #   AUTOSET
+    #
 
-        WARNING : This command is only available on some CFL series devices
+    def Autoset(self):
+        """
+        pySDS [Autoset] : Launch an autoset procedure
+
+        WARNING :   This should be avoided as possible, since the autoset isn't the most reliable thing in the world.
+                    It's possible that the scope will show a detail of the waweform where there is some others things to be seen.
+                    Use in a maximal number of case the manual settings to precisely control the predicted signal
 
             Arguments :
                 None
 
             Returns :
-                self.GetAllErrors() : List of errors
+                self.GetAllErrors() : List of errors that occured
         """
-
-        self.__instr__.write("ACAL ON")
+        self.__instr__.write("ASET")
         return self.GetAllErrors()
-
-    def DisableAutomaticCalibration(self):
-        """
-        PySDS [DisableAutomaticCalibration] :    Disable automatic calibration of the device.
-
-        WARNING : This command is only available on some CFL series devices
-
-            Arguments :
-                None
-
-            Returns :
-                self.GetAllErrors() : List of errors
-        """
-
-        self.__instr__.write("ACAL OFF")
-        return self.GetAllErrors()
-
-    def GetAutomaticCalibrationState(self):
-        """
-        PySDS [GetAutomaticCalibrationState] :   Return the state of the autocalibration
-
-        WARNING : This command is only available on some CFL series devices
-
-            Arguments :
-                None
-
-            Returns :
-                True | False if enabled | Disabled
-        """
-
-        Ret = self.__instr__.write("ACAL?").strip().split(" ")[-1]
-        if Ret == "ON":
-            return True
-        return False
 
     #
     #   STANDARD SCPI COMMANDS
     #
-
-    def ClearStatus(self):
-        """
-        PySDS [ClearStatus] :   Clear the status register
-
-            Arguments :
-                None
-
-            Returns :
-                None
-        """
-
-        self.__instr__.write("*CLS")
-        return
-
-    def ReadCMR(self):
-        """
-        PySDS [ReadCMR] :   Read and clear the CMR register
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        Ret = self.__instr__.query("CMR?")
-        return int(Ret.strip().split(" ")[-1])
-
-    def ReadDDR(self):
-        """
-        PySDS [ReadDDR] :   Read and clear the DDR register
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        Ret = self.__instr__.query("DDR?")
-        return int(Ret.strip().split(" ")[-1])
-
-    def ReadESE(self):
-        """
-        PySDS [ReadESE] :   Read and clear the ESE register
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        Ret = self.__instr__.query("*ESE?")
-        return int(Ret.strip())
-
-    def ReadESR(self):
-        """
-        PySDS [ReadESR] :   Read and clear the ESE register
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        Ret = self.__instr__.query("*ESR?")
-        return int(Ret.strip())
-
-    def ReadEXR(self):
-        """
-        PySDS [ReadEXR] :   Read and clear the EXR register
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        Ret = self.__instr__.query("EXR?")
-        return int(Ret.strip().split(" ")[-1])
-
-    def ReadIDN(self):
-        """
-        PySDS [ReadIDN] :   Read back the device name
-
-            Arguments :
-                None
-
-            Returns :
-                String : The output of the command
-        """
-
-        return self.__instr__.query("*IDN?").strip()
-
-    def ReadINR(self):
-        """
-        PySDS [ReadINR] :   Read and clear the device status
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        return int(self.__instr__.query("INR?").strip().split(" ")[-1])
-
-    def ReadOPC(self):
-        """
-        PySDS [ReadOPC] :   Read the Operation Complete status bit.
-                            Actually, this function always return 1, because the device respond when the operation is complete...
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        return int(self.__instr__.query("*OPC?").strip())
-
-    def ReadOPT(self):
-        """
-        PySDS [ReadOPT] :   Read the installed options on the device
-
-            Arguments :
-                None
-
-            Returns :
-                String : The output of the command
-        """
-
-        return self.__instr__.query("*OPT?").strip()
-
-    def ReadSRE(self):
-        """
-        PySDS [ReadSRE] :   Read the service request enable register value
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        return int(self.__instr__.query("*SRE?").strip())
-
-    def ReadSTB(self):
-        """
-        PySDS [ReadSTB] :   Read the status register
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : Register value
-        """
-
-        return int(self.__instr__.query("*STB?").strip())
-
-    def SetESE(self, value: int):
-        """
-        PySDS [SetESE] :   Write the ESE Register
-
-            Arguments :
-                Integer : Value to be written
-
-            Returns :
-                self.GetAllErrors() returns (List of errors)
-        """
-
-        if value > 255 or value < 0:
-            print("     [ PySDS ] [ SetESE ] : Incorrect value passed !")
-            return -1
-
-        self.__instr__.write(f"*ESE {value}")
-        return self.GetAllErrors()
-
-    def SetESR(self, value: int):
-        """
-        PySDS [SetESR] :   Write the ESR Register
-
-            Arguments :
-                Integer : Value to be written
-
-            Returns :
-                self.GetAllErrors() returns (List of errors)
-        """
-
-        if value > 128 or value < 0:
-            print("     [ PySDS ] [ SetESR ] : Incorrect value passed !")
-            return -1
-
-        self.__instr__.write(f"*ESR {value}")
-        return self.GetAllErrors()
-
-    def SetOPC(self):
-        """
-        PySDS [SetOPC] :   Write the OPC (Operation Complete) Status bit
-
-            Arguments :
-                None
-
-            Returns :
-                self.GetAllErrors() returns (List of errors)
-        """
-        self.__instr__.write("*OPC")
-        return self.GetAllErrors()
-
-    def SetSRE(self, value: int):
-        """
-        PySDS [SetSRE] :   Write the ESR Register (Service Request Enable Register)
-
-            Arguments :
-                Integer : Value to be written
-
-            Returns :
-                self.GetAllErrors() returns (List of errors)
-        """
-
-        if value > 256 or value < 0:
-            print("     [ PySDS ] [ SetSRE ] : Incorrect value passed !")
-            return -1
-
-        self.__instr__.write(f"*SRE {value}")
-        return self.GetAllErrors()
 
     # =============================================================================================================================================
     """
@@ -531,69 +357,6 @@ class PySDS:
     In any way, the class can't be constructed without a compatible device, that's why I didn't create a global SCPI engine...
     """
     # =============================================================================================================================================
-
-    def GetDate(self):
-        """
-        PySDS [GetDate] :   Read and return the date stored on the oscilloscope RTC
-
-        Actually, this function does not work, despite that it's presence is stated on the datasheet.
-        --> Possible issues :
-                Function non implemented ?
-                Syntax not OK ?
-
-            Arguments :
-                None
-
-            Returns :
-                Python Datetime object
-        """
-
-        Ret = self.__instr__.query("DATE?")
-        Ret = Ret.strip().split(" ")[1:]
-
-        # Why did they express month like that ? Cannot they send the number ?
-        match Ret[1]:
-            case "JAN":
-                month = 1
-            case "FEB":
-                month = 2
-            case "MAR":
-                month = 3
-            case "APR":
-                month = 4
-            case "MAY":
-                month = 5
-            case "JUN":
-                month = 6
-            case "JUL":
-                month = 7
-            case "AUG":
-                month = 8
-            case "SEP":
-                month = 9
-            case "OCT":
-                month = 10
-            case "NOV":
-                month = 11
-            case "DEC":
-                month = 12
-
-        return datetime(Ret[2], month, Ret[0], Ret[3], Ret[4], Ret[5])
-
-    def SetDate(self, Date: datetime):
-        """
-        PySDS [SetDate] :   Set the internal RTC date and time
-
-            Arguments :
-                Python Datetime object
-
-            Returns :
-                self.GetAllErrors() returns (List of errors)
-        """
-        self.__instr__.write(
-            f"DATE {Date.day},{Date.strftime("%b").upper()},{Date.year},{Date.hour},{Date.minute},{Date.second}"
-        )
-        return self.GetAllErrors()
 
     def LockDevicePanel(self):
         """
@@ -642,36 +405,6 @@ class PySDS:
             return True
         return False
 
-    def GetMemorySize(self):
-        """
-        PySDS [GetMemorySize] : Return the number in millions of samples that can be stored into the memory
-
-        WARNING : The value is expressed in number of samples, and not in bytes !
-
-            Arguments :
-                None
-
-            Returns :
-                Integer : The number of **MILLIONS** of sample that can be stored
-        """
-        Ret = self.__instr__.query("MSIZ?")
-        return int(Ret.strip().split(" ")[-1][:-1])
-
-    def SetMemorySize(self, value: int):
-        """
-        PySDS [SetMemorySize] : Set the memory size for the samples of the scope.
-
-        WARNING : The value is expressed in number of samples, and not in bytes !
-
-            Arguments :
-                The value in **MILLIONS** to the used.
-
-            Returns :
-                self.GetAllErrors() returns (List of errors)
-        """
-        self.__instr__.write(f"MSIZ {value}M")
-        return self.GetAllErrors()
-
     def RecallPreset(self, PresetNumber: int):
         """
         PySDS [RecallPreset] :  Apply a previously stored list of settings on the device.
@@ -683,9 +416,11 @@ class PySDS:
 
             Returns :
                 self.GetAllErrors() returns (List of errors)
+                or
+                -1 : Invalid preset ID
         """
         if PresetNumber > 20 or PresetNumber < 0:
-            print("     [ PySDS ] [ RecallPreset ] : Invalid preset number")
+            return [1, -1]
 
         self.__instr__.write(f"*RCL {PresetNumber}")
         return self.GetAllErrors()
@@ -700,9 +435,11 @@ class PySDS:
 
             Returns :
                 self.GetAllErrors() returns (List of errors)
+                or
+                -1 : Invalid preset ID
         """
         if PresetNumber > 20 or PresetNumber < 1:
-            print("     [ PySDS ] [ SavePresent ] : Invalid preset number")
+            return [1, -1]
 
         self.__instr__.write(f"*SAV {PresetNumber}")
         return self.GetAllErrors()
@@ -730,10 +467,12 @@ class PySDS:
     """
     # =============================================================================================================================================
 
-    def GetAllErrors(self):
+    def GetAllErrors(self, print=False):
         """
         PySDS [GetAllErrors] :  Read the device errors, and until at least one error exist, continue to read it.
                                 For each errors, it will be printed in console and returned on a list, with it's lengh in first position.
+
+                                This function also trigger a reading of the status of the device to detect if value where adapted or cancelled.
 
             Arguments :
                 None
@@ -752,7 +491,7 @@ class PySDS:
         # When the last error has been fetched (or no errors at all !), we exit the loop
 
         while FetchNextError:
-            Ret = self.ReadEXR()
+            Ret = self.__Generics__.ReadEXR()
 
             if Ret == 0:
                 FetchNextError = False
@@ -761,65 +500,74 @@ class PySDS:
                 Errors[0] += 1
                 Errors.append(int(Ret))
 
-                # Theses errors messages came from the Siglent SCPI documentation, and are only here to help the developper to get the error easily !
-                match Ret:
-                    case 21:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Permission error. The command cannot be executed in local mode."
-                        )
-                    case 22:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Environment error. The instrument is not configured to correctly process command. For instance, the oscilloscope cannot be set to RIS at a slow timebase."
-                        )
-                    case 23:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Option error. The command applies to an option which has not been installed."
-                        )
-                    case 25:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Parameter error. Too many parameters specified."
-                        )
-                    case 26:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Non-implemented command."
-                        )
-                    case 32:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Waveform descriptor error. An invalid waveform descriptor has been detected."
-                        )
-                    case 36:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Panel setup error. An invalid panel setup data block has been detected."
-                        )
-                    case 50:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) No mass storage present when user attempted to access it."
-                        )
-                    case 53:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Mass storage was write protected when user attempted to create, or a file, to delete a file, or to format the device."
-                        )
-                    case 58:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Mass storage file not found."
-                        )
-                    case 59:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Requested directory not found."
-                        )
-                    case 61:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Mass storage filename not DOS compatible, or illegal filename."
-                        )
-                    case 62:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Cannot write on mass storage because filename already exists."
-                        )
+                if print == True:
+                    # Theses errors messages came from the Siglent SCPI documentation, and are only here to help the developper to get the error easily !
+                    match Ret:
+                        case 21:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Permission error. The command cannot be executed in local mode."
+                            )
+                        case 22:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Environment error. The instrument is not configured to correctly process command. For instance, the oscilloscope cannot be set to RIS at a slow timebase."
+                            )
+                        case 23:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Option error. The command applies to an option which has not been installed."
+                            )
+                        case 25:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Parameter error. Too many parameters specified."
+                            )
+                        case 26:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Non-implemented command."
+                            )
+                        case 32:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Waveform descriptor error. An invalid waveform descriptor has been detected."
+                            )
+                        case 36:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Panel setup error. An invalid panel setup data block has been detected."
+                            )
+                        case 50:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) No mass storage present when user attempted to access it."
+                            )
+                        case 53:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Mass storage was write protected when user attempted to create, or a file, to delete a file, or to format the device."
+                            )
+                        case 58:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Mass storage file not found."
+                            )
+                        case 59:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Requested directory not found."
+                            )
+                        case 61:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Mass storage filename not DOS compatible, or illegal filename."
+                            )
+                        case 62:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Cannot write on mass storage because filename already exists."
+                            )
 
         # When the loop exist, we return the list
+        Retval = self.GetDeviceStatus(print)
+
+        if Retval != 0:
+            Errors[0] += 1
+            Errors.append(
+                Retval + 1000
+            )  # Increment of 1000 to signify an error in the MSB register
+
         return Errors
 
-    def GetDeviceStatus(self):
+    def GetDeviceStatus(self, print=False):
         """
         PySDS [GetDeviceStatus] :   Get the device status, and parse it to make it easier to use for developpers or users.
                                     Print each status bit
@@ -832,7 +580,7 @@ class PySDS:
         """
 
         # Fetch the value
-        Ret = self.ReadINR()
+        Ret = self.__Generics__.ReadINR()
 
         # Mask each bit in the range.
         # We do this by logic AND and shifting to get back to 0 | 1
@@ -879,10 +627,11 @@ class PySDS:
                 case 15:
                     message = "Reserved for future use"
 
-            if bit == 1:
-                print(f" {index:2} |  {bit:5} | {message}")
-            else:
-                print(f" {index:2} |  {bit:5} | -")
+            if print == True:
+                if bit == 1:
+                    print(f" {index:2} |  {bit:5} | {message}")
+                else:
+                    print(f" {index:2} |  {bit:5} | -")
 
         return Bits
 
@@ -899,7 +648,7 @@ class PySDS:
                 List of String for all options
         """
 
-        Ret = self.ReadOPT()
+        Ret = self.__Generics__.ReadOPT()
         return Ret.split(" ")[-1].split(",")
 
     def GetDeviceStatus(self):
@@ -914,7 +663,7 @@ class PySDS:
         """
 
         # Fetch the value
-        Ret = self.ReadSTB()
+        Ret = self.__Generics__.ReadSTB()
 
         # Mask each bit in the range.
         # We do this by logic AND and shifting to get back to 0 | 1
