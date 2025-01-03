@@ -1,6 +1,5 @@
-from  pathlib import Path
-import tqdm
-import subprocess
+from pathlib import Path
+import os
 
 files = []
 folder = Path("SDSPy")
@@ -17,9 +16,4 @@ for item in folder.iterdir():
 sorted = []
 for index, file in enumerate(files):
     if not (file.endswith("__init__.py") or file.endswith("main.py")):
-        sorted.append(file.split(".")[0] + ".md")
-
-for index, file in enumerate(sorted):
-    with open(file, "w") as f:
-        print(["pydoc-markdown", "-p", file[:-2], file])
-        # subprocess.run(["pydoc-markdown", "-p", file[:-2], "--render-toc", ">", file])
+        print(f"pydoc-markdown -p . --render-toc >.\{file[:-3]+".md"}")
