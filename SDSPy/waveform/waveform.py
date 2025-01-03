@@ -26,7 +26,9 @@ class SiglentWaveform(SiglentBase):
                 GetWaveformData :       Read the waveform data
     """
 
-    def GetWaveformData(self, Channel, Vdiv = 1, Vos = 0, Tdiv = 0.000_000_001, SampleNumber = 1000):
+    def GetWaveformData(
+        self, Channel, Vdiv=1, Vos=0, Tdiv=0.000_000_001, SampleNumber=1000
+    ):
         """
         pySDS [Waveform][GetWaveformData] : Return the raw data for a waveform
 
@@ -56,9 +58,9 @@ class SiglentWaveform(SiglentBase):
             and Channel is not "MATH"
         ):
             return [-1000], []
-        
+
         # Configure the device
-        self.__instr__.write("WFSU SP,0,NP,0,FP,0") # All data points
+        self.__instr__.write("WFSU SP,0,NP,0,FP,0")  # All data points
 
         # First, get the data
         self.__instr__.write(f"{Channel}:WF? DAT2")
@@ -94,7 +96,7 @@ class SiglentWaveform(SiglentBase):
 
         if len(wave) != data_len:
             return [-1004], []
-        
+
         # Analog channel
         if header[0] == "C":
             # Now starting to decode the data
@@ -106,7 +108,7 @@ class SiglentWaveform(SiglentBase):
                     val -= 256
 
                 out.append(float(val * (Vdiv / 25) - Vos))
-                time.append(float((-Tdiv * 7) + index  * Tdiv))
+                time.append(float((-Tdiv * 7) + index * Tdiv))
 
         # Digital channel
         elif header[0] == "D":
@@ -115,13 +117,13 @@ class SiglentWaveform(SiglentBase):
             time = []
             for index, byte in enumerate(data):
                 # Iterate over each bit
-                for index2, bit in enumerate(format(int(byte, 16), '#010b')[2:]):
+                for index2, bit in enumerate(format(int(byte, 16), "#010b")[2:]):
                     out.append(float(bit))
-                    time.append(float((-Tdiv * 7) + (index * 8 + index2)  * Tdiv))
+                    time.append(float((-Tdiv * 7) + (index * 8 + index2) * Tdiv))
 
         # Maths data
         else:
-             # Now starting to decode the data
+            # Now starting to decode the data
             Tinterpol = data_len / SampleNumber * Tdiv
 
             out = []
@@ -132,5 +134,4 @@ class SiglentWaveform(SiglentBase):
                     val -= 256
 
                 out.append(float(val * (Vdiv / 25) - Vos))
-                time.append(float((-Tdiv * 7) + index  * Tinterpol))
-
+                time.append(float((-Tdiv * 7) + index * Tinterpol))

@@ -164,7 +164,7 @@ class PySDS:
         self.Trigger = SiglentTrigger(self.__instr__, self)
         self.Timebase = SiglentTimebase(self.__instr__, self)
         self.Waveform = SiglentWaveform(self.__instr__, self)
-        
+
         # For some older device, load additionnal commands that are depecrated in the newest models / firmwares
         if "ACAL" in self.__Config__["Specs"]["LegacyFunctions"]:
             self.Calibration = ACAL(self.__instr__, self)
