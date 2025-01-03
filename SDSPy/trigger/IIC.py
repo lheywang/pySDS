@@ -12,8 +12,8 @@ from digital import SiglentDChannel
 
 class SiglentIIC(SiglentBase):
     """
-    pySDS [Files][SiglentIIC] : Class herited from SiglentBase.
-                                Store all command related the control of the triggering system for the I2C bus
+    pySDS [Trigger][SiglentIIC] :   Class herited from SiglentBase.
+                                    Store all command related the control of the triggering system for the I2C bus
 
         Attributes :
             Herited from SiglentBase

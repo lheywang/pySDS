@@ -10,8 +10,8 @@ from BaseOptionnalClass import SiglentBase
 
 class SiglentLIN(SiglentBase):
     """
-    pySDS [Files][SiglentLIN] : Class herited from SiglentBase.
-                                Store all command related the control of the triggering system for the LIN bus
+    pySDS [Trigger][SiglentLIN] :   Class herited from SiglentBase.
+                                    Store all command related the control of the triggering system for the LIN bus
 
         Attributes :
             Herited from SiglentBase

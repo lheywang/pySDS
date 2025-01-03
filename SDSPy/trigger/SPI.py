@@ -12,8 +12,8 @@ from digital import SiglentDChannel
 
 class SiglentSPI(SiglentBase):
     """
-    pySDS [Files][SiglentSPI] : Class herited from SiglentBase.
-                                Store all command related the control of the triggering system for the SPI bus
+    pySDS [Trigger][SiglentSPI] :   Class herited from SiglentBase.
+                                    Store all command related the control of the triggering system for the SPI bus
 
         Attributes :
             Herited from SiglentBase
