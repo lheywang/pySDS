@@ -7,6 +7,7 @@
 # ============================================================================================================
 from BaseOptionnalClass import SiglentBase
 
+
 class SiglentCAN(SiglentBase):
     """
     pySDS [Files][SiglentCAN] : Class herited from SiglentBase.
@@ -19,6 +20,6 @@ class SiglentCAN(SiglentBase):
             Private (0) :
                 None
 
-            Public (15): 
+            Public (15):
 
     """

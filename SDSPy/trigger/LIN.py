@@ -7,6 +7,7 @@
 # ============================================================================================================
 from BaseOptionnalClass import SiglentBase
 
+
 class SiglentLIN(SiglentBase):
     """
     pySDS [Files][SiglentLIN] : Class herited from SiglentBase.
@@ -19,6 +20,6 @@ class SiglentLIN(SiglentBase):
             Private (0) :
                 None
 
-            Public (15): 
+            Public (15):
 
     """

@@ -35,7 +35,7 @@ class SiglentTrigger(SiglentBase):
             Private (0) :
                 None
 
-            Public (15): 
+            Public (15):
                 SetCoupling :   Configure trigger coupling
                 SetDelay :      Configure trigger delay
                 GetDelay :      Get trigger delay
@@ -52,6 +52,7 @@ class SiglentTrigger(SiglentBase):
                 SetPattern :    Set trigger pattern
                 GetPattern :    Get trigger pattern
     """
+
     def __init__(self, instr, baseclass, number=0):
         """
         Overhide the standard class init to store some more advanced data !

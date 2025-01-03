@@ -7,6 +7,7 @@
 # ============================================================================================================
 from BaseOptionnalClass import SiglentBase
 
+
 class SiglentUART(SiglentBase):
     """
     pySDS [Files][SiglentUART] : Class herited from SiglentBase.
@@ -19,6 +20,6 @@ class SiglentUART(SiglentBase):
             Private (0) :
                 None
 
-            Public (15): 
+            Public (15):
 
     """

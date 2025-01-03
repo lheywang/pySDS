@@ -7,6 +7,7 @@
 # ============================================================================================================
 from BaseOptionnalClass import SiglentBase
 
+
 class SiglentSPI(SiglentBase):
     """
     pySDS [Files][SiglentSPI] : Class herited from SiglentBase.
@@ -19,6 +20,6 @@ class SiglentSPI(SiglentBase):
             Private (0) :
                 None
 
-            Public (15): 
+            Public (15):
 
     """
