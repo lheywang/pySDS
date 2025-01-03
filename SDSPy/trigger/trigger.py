@@ -22,6 +22,8 @@ class SiglentTrigger(SiglentBase):
                                     Due to advanced features available, this class group subclasses.
                                     Thus, it's possible to trigger on serial busses for a specific address or conditions.
 
+    WARNING : Advanced features are linked to bus decoding ability, and can sometimes interfer between their configurations !
+
         Attributes :
             Herited from SiglentBase
             +

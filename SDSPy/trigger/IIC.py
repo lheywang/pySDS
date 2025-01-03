@@ -7,7 +7,7 @@
 # ============================================================================================================
 from BaseOptionnalClass import SiglentBase
 from channel import SiglentChannel
-from digital import SiglentDigital
+from digital import SiglentDChannel
 
 
 class SiglentIIC(SiglentBase):
@@ -30,7 +30,7 @@ class SiglentIIC(SiglentBase):
                 ConfigureTriggerData1 :         Set the trigger data 1 condition
                 ConfigureTriggerData2 :         Set the trigger data 2 condition
                 ConfigureTriggerQual :          Set the trigger eeprom qualifier condition
-                ConfigureTriggerRW :            Set the read / write condition  
+                ConfigureTriggerRW :            Set the read / write condition
                 ConfigureTriggerAddressLen :    Set the address len condition
                 ConfigureTriggerDataLen :       Set the data len condition
     """
@@ -48,7 +48,7 @@ class SiglentIIC(SiglentBase):
                 or
                 -1 : Invalid Channel
         """
-        if type(Channel) is not SiglentChannel and type(Channel) is not SiglentDigital:
+        if type(Channel) is not SiglentChannel and type(Channel) is not SiglentDChannel:
             return [1, -1]
 
         cmd = f"TRIIC:SCL {Channel.__channel__}"
@@ -61,7 +61,7 @@ class SiglentIIC(SiglentBase):
 
     def SetTriggerOnSDA(self, Channel, Threshold=1.65):
         """
-        pySDS [IIC][SetTriggerOnSDA] : Configure the trigger on the SCL bus.
+        pySDS [IIC][SetTriggerOnSDA] : Configure the trigger on the SDA bus.
 
             Arguments :
                 Channel :       SiglentChannel or SiglentDCHannel related to the SDA pin
@@ -72,7 +72,7 @@ class SiglentIIC(SiglentBase):
                 or
                 -1 : Invalid Channel
         """
-        if type(Channel) is not SiglentChannel and type(Channel) is not SiglentDigital:
+        if type(Channel) is not SiglentChannel and type(Channel) is not SiglentDChannel:
             return [1, -1]
 
         cmd = f"TRIIC:SDA {Channel.__channel__}"
