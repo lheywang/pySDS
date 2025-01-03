@@ -38,7 +38,7 @@ class SiglentCAN(SiglentBase):
         pySDS [CAN][SetTriggerOnCANH] : Configure the trigger on the CANH pin
 
             Arguments :
-                Channel :       SiglentChannel or SiglentDCHannel related to the RCANH pin
+                Channel :       SiglentChannel or SiglentDCHannel related to the CANH pin
                 Threshold :     For analog channel only, the used voltage. Default to 1.65
 
             Returns :
@@ -68,6 +68,13 @@ class SiglentCAN(SiglentBase):
                 self.GetAllErrors()
                 or
                 -1 : Invalid condition
+
+            Possibles conditions
+                START— Start condition.
+                REMOTE— Remote frame
+                ID— Specifies a search based on ID bits and ID.
+                ID_AND_DATA— Specify a search based on ID bits, ID and data.
+                ERROR— Error frame
         """
         if Condition not in ["START", "REMOTE", "ID", "ID_AND_DATA", "ERROR"]:
             return [1, -1]
@@ -144,7 +151,7 @@ class SiglentCAN(SiglentBase):
 
     def SetTriggerBaud(self, Baud):
         """
-        pySDS [UART][SetTriggerBaud] : Set the baud rate of the UART comm
+        pySDS [CAN][SetTriggerBaud] : Set the baud rate of the UART comm
 
             Arguments :
                 Baud : Value. (As a string for standard values, or as an integer for non standard)*
@@ -168,7 +175,7 @@ class SiglentCAN(SiglentBase):
                 800k
                 1M
         """
-        if Baud < 300 or Baud > 5_000_000:
+        if Baud < 5_000 or Baud > 1_000_000:
             return [1, -1]
 
         if Baud not in [
@@ -183,9 +190,9 @@ class SiglentCAN(SiglentBase):
             "800k",
             "1M",
         ]:
-            cmd = f"TRUART:BAUD CUSTOM,{Baud}"
+            cmd = f"TRCAN:BAUD CUSTOM,{Baud}"
         else:
-            cmd = f"TRUART:BAUD {Baud}"
+            cmd = f"TRCAN:BAUD {Baud}"
 
         self.__instr__.write(cmd)
         return self.__baseclass__.GetAllErrors()
