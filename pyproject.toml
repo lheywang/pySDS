@@ -10,8 +10,7 @@ maintainers  = [
     ]
 license = "GPL-3.0-or-later"
 readme = [  
-    "README.md",
-    "documentation/doc.md"
+    "README.md"
     ]
 repository  = "https://github.com/lheywang/pySDS"
 keywords = [
