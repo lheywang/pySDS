@@ -22,8 +22,19 @@ class SiglentUART(SiglentBase):
             Private (0) :
                 None
 
-            Public (15):
-
+            Public (12):
+                SetTriggerOnRX :                Set trigger on RX Pin
+                SetTriggerOnTX :                Set trigger on TX Pin
+                SetTriggerDataSource :          Set used data source
+                SetTriggerCondition :           Set trigger condition
+                SetTriggerQualifier :           Set trigger qualifier
+                ConfigureTriggerData :          Set triggering data
+                SetTriggerBaud :                Set triggering baud (act also on bus decoding)
+                ConfigureTriggerDataLen :       Set trigger data len (act also on bus decoding)
+                ConfigureTriggerParity :        Set trigger parity (act also on bus decoding)
+                ConfigureTriggerPolarity :      Set trigger polarity (act also on bus decoding)
+                ConfigureTriggerStop :          Set trigger stop bits (act also on bus decoding)
+                ConfigureTriggerBitOrder :      Set trigger bit order (act also on bus decoding)
     """
 
     def SetTriggerOnRX(self, Channel, Threshold=1.65):
