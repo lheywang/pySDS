@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "SDSpy"
-version = "0.2.0"
+version = "0.9.0a"
 description = "A Python package to interract with Siglent SDS Oscilloscpe series"
 authors = [
     "lheywang <leonard.heywang@gmail.com>"
