@@ -55,7 +55,7 @@ class SiglentWaveform(SiglentBase):
         if (
             type(Channel) is not SiglentChannel
             and type(Channel) is not SiglentDChannel
-            and Channel is not "MATH"
+            and Channel != "MATH"
         ):
             return [-1000], []
 
@@ -77,18 +77,18 @@ class SiglentWaveform(SiglentBase):
             end = data[-2:]
 
         # End check
-        if end[0] is not r"\n" and end[1] is not r"\n":
+        if end[0] != r"\n" and end[1] != r"\n":
             return [-1001], []
 
         # Header check
         if Channel == "MATH":
-            if header[4:15] is not ":WF DAT2,#9":
+            if header[4:15] != ":WF DAT2,#9":
                 return [-1002], []
             if header[:4] is not Channel[:4]:
                 return [-1003], []
             data_len = int(header[16:])
         else:
-            if header[2:13] is not ":WF DAT2,#9":
+            if header[2:13] != ":WF DAT2,#9":
                 return [-1002], []
             if header[:2] is not Channel[:2]:
                 return [-1003], []

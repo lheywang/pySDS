@@ -467,7 +467,7 @@ class PySDS:
     """
     # =============================================================================================================================================
 
-    def GetAllErrors(self):
+    def GetAllErrors(self, print=False):
         """
         PySDS [GetAllErrors] :  Read the device errors, and until at least one error exist, continue to read it.
                                 For each errors, it will be printed in console and returned on a list, with it's lengh in first position.
@@ -500,63 +500,64 @@ class PySDS:
                 Errors[0] += 1
                 Errors.append(int(Ret))
 
-                # Theses errors messages came from the Siglent SCPI documentation, and are only here to help the developper to get the error easily !
-                match Ret:
-                    case 21:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Permission error. The command cannot be executed in local mode."
-                        )
-                    case 22:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Environment error. The instrument is not configured to correctly process command. For instance, the oscilloscope cannot be set to RIS at a slow timebase."
-                        )
-                    case 23:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Option error. The command applies to an option which has not been installed."
-                        )
-                    case 25:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Parameter error. Too many parameters specified."
-                        )
-                    case 26:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Non-implemented command."
-                        )
-                    case 32:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Waveform descriptor error. An invalid waveform descriptor has been detected."
-                        )
-                    case 36:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Panel setup error. An invalid panel setup data block has been detected."
-                        )
-                    case 50:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) No mass storage present when user attempted to access it."
-                        )
-                    case 53:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Mass storage was write protected when user attempted to create, or a file, to delete a file, or to format the device."
-                        )
-                    case 58:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Mass storage file not found."
-                        )
-                    case 59:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Requested directory not found."
-                        )
-                    case 61:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Mass storage filename not DOS compatible, or illegal filename."
-                        )
-                    case 62:
-                        print(
-                            f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Cannot write on mass storage because filename already exists."
-                        )
+                if print == True:
+                    # Theses errors messages came from the Siglent SCPI documentation, and are only here to help the developper to get the error easily !
+                    match Ret:
+                        case 21:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Permission error. The command cannot be executed in local mode."
+                            )
+                        case 22:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Environment error. The instrument is not configured to correctly process command. For instance, the oscilloscope cannot be set to RIS at a slow timebase."
+                            )
+                        case 23:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Option error. The command applies to an option which has not been installed."
+                            )
+                        case 25:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Parameter error. Too many parameters specified."
+                            )
+                        case 26:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Non-implemented command."
+                            )
+                        case 32:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Waveform descriptor error. An invalid waveform descriptor has been detected."
+                            )
+                        case 36:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Panel setup error. An invalid panel setup data block has been detected."
+                            )
+                        case 50:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) No mass storage present when user attempted to access it."
+                            )
+                        case 53:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Mass storage was write protected when user attempted to create, or a file, to delete a file, or to format the device."
+                            )
+                        case 58:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Mass storage file not found."
+                            )
+                        case 59:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Requested directory not found."
+                            )
+                        case 61:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Mass storage filename not DOS compatible, or illegal filename."
+                            )
+                        case 62:
+                            print(
+                                f"     [ PySDS ] [ GetAllErrors ] : ({Ret}) Cannot write on mass storage because filename already exists."
+                            )
 
         # When the loop exist, we return the list
-        Retval = self.GetDeviceStatus()
+        Retval = self.GetDeviceStatus(print)
 
         if Retval != 0:
             Errors[0] += 1
@@ -566,7 +567,7 @@ class PySDS:
 
         return Errors
 
-    def GetDeviceStatus(self):
+    def GetDeviceStatus(self, print=False):
         """
         PySDS [GetDeviceStatus] :   Get the device status, and parse it to make it easier to use for developpers or users.
                                     Print each status bit
@@ -626,10 +627,11 @@ class PySDS:
                 case 15:
                     message = "Reserved for future use"
 
-            if bit == 1:
-                print(f" {index:2} |  {bit:5} | {message}")
-            else:
-                print(f" {index:2} |  {bit:5} | -")
+            if print == True:
+                if bit == 1:
+                    print(f" {index:2} |  {bit:5} | {message}")
+                else:
+                    print(f" {index:2} |  {bit:5} | -")
 
         return Bits
 
