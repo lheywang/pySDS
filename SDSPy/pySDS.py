@@ -34,7 +34,6 @@ from references import SiglentReference
 from timebase import SiglentTimebase
 from trigger import SiglentTrigger
 from waveform import SiglentWaveform
-from WGEN import SiglentWGEN
 
 
 class PySDS:
@@ -151,16 +150,21 @@ class PySDS:
 
         # Then, initialize all of the subclass
         self.Acquistion = SiglentAcquisition(self.__instr__, self)
+        self.Autotest = SiglentPassFail(self.__instr__, self)
         self.Communication = SiglentCommunication(self.__instr__, self)
         self.Cursor = SiglentCursor(self.__instr__, self)
         self.Decode = SiglentDecode(self.__instr__, self)
         self.Digital = SiglentDigital(self.__instr__, self)
+        self.Display = SiglentScreen(self.__instr__, self)
         self.Files = SiglentFiles(self.__instr__, self)
         self.History = SiglentHistory(self.__instr__, self)
         self.Maths = SiglentMaths(self.__instr__, self)
-        self.Measure = SiglentReference(self.__instr__, self)
+        self.Measure = SiglentMeasure(self.__instr__, self)
+        self.Reference = SiglentReference(self.__instr__, self)
         self.Trigger = SiglentTrigger(self.__instr__, self)
-
+        self.Timebase = SiglentTimebase(self.__instr__, self)
+        self.Waveform = SiglentWaveform(self.__instr__, self)
+        
         # For some older device, load additionnal commands that are depecrated in the newest models / firmwares
         if "ACAL" in self.__Config__["Specs"]["LegacyFunctions"]:
             self.Calibration = ACAL(self.__instr__, self)
