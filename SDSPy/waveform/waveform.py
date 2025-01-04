@@ -5,9 +5,9 @@
 # Base file for the waveform class
 #
 # ============================================================================================================
-from BaseOptionnalClass import SiglentBase
-from channel import SiglentChannel
-from digital import SiglentDChannel
+from ..BaseOptionnalClass import SiglentBase
+from ..channel import SiglentChannel
+from ..digital import SiglentDChannel
 
 
 class SiglentWaveform(SiglentBase):

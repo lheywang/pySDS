@@ -7,7 +7,7 @@
 # ============================================================================================================
 import datetime
 
-from BaseOptionnalClass import SiglentBase
+from ..BaseOptionnalClass import SiglentBase
 
 
 class SiglentHistory(SiglentBase):

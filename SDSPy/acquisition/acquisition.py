@@ -5,7 +5,7 @@
 # Base file for the acquisition class
 #
 # ============================================================================================================
-from BaseOptionnalClass import SiglentBase
+from ..BaseOptionnalClass import SiglentBase
 
 
 class SiglentAcquisition(SiglentBase):

@@ -5,8 +5,8 @@
 # Base file for the cursor class
 #
 # ============================================================================================================
-from BaseOptionnalClass import SiglentBase
-from channel import SiglentChannel
+from ..BaseOptionnalClass import SiglentBase
+from ..channel import SiglentChannel
 from warnings import warn
 
 

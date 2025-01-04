@@ -5,9 +5,9 @@
 # Advanced file for the trigger class, specialized on SPI bus
 #
 # ============================================================================================================
-from BaseOptionnalClass import SiglentBase
-from channel import SiglentChannel
-from digital import SiglentDChannel
+from ..BaseOptionnalClass import SiglentBase
+from ..channel import SiglentChannel
+from ..digital import SiglentDChannel
 
 
 class SiglentSPI(SiglentBase):

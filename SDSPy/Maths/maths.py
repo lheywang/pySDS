@@ -5,7 +5,7 @@
 # Base file for the maths class
 #
 # ============================================================================================================
-from BaseOptionnalClass import SiglentBase
+from ..BaseOptionnalClass import SiglentBase
 
 
 class SiglentMaths(SiglentBase):

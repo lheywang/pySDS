@@ -6,7 +6,7 @@
 # This class could easily be reused with any IEEE 488.1 compliant device.
 #
 # ============================================================================================================
-from BaseOptionnalClass import SiglentBase
+from ..BaseOptionnalClass import SiglentBase
 
 
 class SCPIGenerics(SiglentBase):

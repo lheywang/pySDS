@@ -5,7 +5,7 @@
 # Base file for the Communication class
 #
 # ============================================================================================================
-from BaseOptionnalClass import SiglentBase
+from ..BaseOptionnalClass import SiglentBase
 
 
 class SiglentCommunication(SiglentBase):

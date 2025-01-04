@@ -5,7 +5,7 @@
 # Base file for the counter class
 #
 # ============================================================================================================
-from BaseOptionnalClass import SiglentBase
+from ..BaseOptionnalClass import SiglentBase
 
 
 class COUNTER(SiglentBase):

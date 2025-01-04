@@ -5,7 +5,7 @@
 # Base file for the cursor class
 #
 # ============================================================================================================
-from BaseOptionnalClass import SiglentBase
+from ..BaseOptionnalClass import SiglentBase
 from datetime import datetime
 
 
