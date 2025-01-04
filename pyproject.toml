@@ -6,7 +6,7 @@ authors = ["lheywang <leonard.heywang@gmail.com>"]
 maintainers = ["lheywang <leonard.heywang@gmail.com>"]
 license = "GPL-3.0-or-later"
 readme = ["README.md"]
-repository = "https://github.com/lheywang/pySDS"
+repository = "https://github.com/lheywang/PySDG"
 documentation = "https://github.com/lheywang/SDSpy/tree/Main/documentation/markdown"
 keywords = ["PyVISA", "SCPI", "Siglent", "SDS", "Oscilloscope", "Python"]
 include = [{ path = "config", format = "sdist" }]

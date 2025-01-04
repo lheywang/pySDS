@@ -45,7 +45,7 @@ cd ../../../SDSPy
 
 rem Generatic global doc project
 echo|set /p="Generatic doc for SDSPy ... "
-pydoc-markdown -p pySDS > ..\documentation\markdown\SDSPy.md
+pydoc-markdown -p PySDG > ..\documentation\markdown\SDSPy.md
 echo Done !
 
 echo =========================================================

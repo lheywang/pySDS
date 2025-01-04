@@ -1,5 +1,5 @@
-# PySDS
-PySDS is a Python package to exploit functionnalities of the Siglent SDS Oscilloscopes.
+# PySDG
+PySDG is a Python package to exploit functionnalities of the Siglent SDS Oscilloscopes.
 
 ## Installation :
 You can simply do :
