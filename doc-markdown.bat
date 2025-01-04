@@ -11,7 +11,7 @@ cd .\SDSPy\
 for /D %%i in (*) do (
     echo|set /p="Generatic doc for %%i ... "
     if not exist "..\documentation\markdown\%%i" mkdir ..\documentation\markdown\%%i
-    rem pydoc-markdown -p %%i > ..\documentation\markdown\%%i\%%i.md
+    pydoc-markdown -p %%i > ..\documentation\markdown\%%i\%%i.md
     echo Done !
 )
 
@@ -24,12 +24,16 @@ cd ../../SDSPy
 cd trigger
 
 for %%f in (*.py) do (
-    echo|set /p="Generatic doc for %%f ... "
-    echo pydoc-markdown -p %%f > ..\..\documentation\markdown\trigger\%%f.md
+    echo|set /p="Generatic doc for %%~nf ... "
+    pydoc-markdown -p %%~nf > ..\..\documentation\markdown\trigger\%%~nf.md
     echo Done !
 )
 
 cd ..
+
+cd ../documentation/markdown/trigger
+if exist "__init__.md" del __init__.md
+cd ../..
 
 echo|set /p="Generatic doc for SDSPy ... "
 pydoc-markdown -p pySDS > ..\documentation\markdown\SDSPy.md
