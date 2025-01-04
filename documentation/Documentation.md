@@ -55,8 +55,6 @@ Then, there is folders per functionnality of the scope, for example : One folder
 
 Documentation was build using pydoc-markdown package, which extract doc from docstrings in the source code.
 
-
-
 ## Examples
 There is some examples on the source repo (linked in the .tar.gz file), if you need some more specific explanations !
 Take a look at them :
