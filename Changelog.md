@@ -1,6 +1,14 @@
 # Changelogs
 Here will be listed all changes done to the package, with the most recent at the top
 
+## [1.0.0b]
+### Added
+- Added some docs
+- Added more examples
+
+### Modified
+- Changed some links on the pyproject.toml
+
 ## [1.0.0a]
 ### Changed :
 - Package is finished *in theory*. Now need for testing (which need some tooling...). All python files are done.
