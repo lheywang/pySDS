@@ -2,7 +2,7 @@
 echo ==========================================================
 echo Generating HTML documentation...
 
-pdoc --output-dir documentation/ .\SDSPy\
+pdoc --output-dir documentation/html/ .\SDSPy\
 
 echo Done !
 echo =========================================================
