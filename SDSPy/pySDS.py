@@ -149,51 +149,24 @@ class PySDS:
             )
 
         # Then, initialize all of the subclass
+        # Warning : Some fetures may not be available globally, but due to minor variations they're here for all.
 
         self.Acquistion = SiglentAcquisition(self.__instr__, self)
-        """SiglentAcquisition subclass. Check dedicated documentation :`SDSPy.acquisition.SiglentAcquisition`"""
-
         self.Autotest = SiglentPassFail(self.__instr__, self)
-        """SiglentPassFail subclass. Check dedicated documentation"""
-
         self.Communication = SiglentCommunication(self.__instr__, self)
-        """SiglentCommunication subclass. Check dedicated documentation"""
-
         self.Cursor = SiglentCursor(self.__instr__, self)
-        """SiglentCursor subclass. Check dedicated documentation"""
-
         self.Decode = SiglentDecode(self.__instr__, self)
-        """SiglentDecode subclass. Check dedicated documentation"""
-
         self.Digital = SiglentDigital(self.__instr__, self)
-        """SiglentDigital subclass. Check dedicated documentation"""
-
         self.Display = SiglentScreen(self.__instr__, self)
-        """SiglentScreen subclass. Check dedicated documentation"""
-
         self.Files = SiglentFiles(self.__instr__, self)
-        """SiglentFiles subclass. Check dedicated documentation"""
-
         self.History = SiglentHistory(self.__instr__, self)
-        """SiglentHistory subclass. Check dedicated documentation"""
-
         self.Maths = SiglentMaths(self.__instr__, self)
-        """SiglentMaths subclass. Check dedicated documentation"""
-
         self.Measure = SiglentMeasure(self.__instr__, self)
-        """SiglentMeasure subclass. Check dedicated documentation"""
-
         self.Reference = SiglentReference(self.__instr__, self)
-        """SiglentReference subclass. Check dedicated documentation"""
-
         self.Trigger = SiglentTrigger(self.__instr__, self)
-        """SiglentTrigger subclass. Check dedicated documentation"""
-
         self.Timebase = SiglentTimebase(self.__instr__, self)
-        """SiglentTimebase subclass. Check dedicated documentation"""
-
         self.Waveform = SiglentWaveform(self.__instr__, self)
-        """SiglentWaveform subclass. Check dedicated documentation"""
+
 
         # For some older device, load additionnal commands that are depecrated in the newest models / firmwares
         if "ACAL" in self.__Config__["Specs"]["LegacyFunctions"]:
