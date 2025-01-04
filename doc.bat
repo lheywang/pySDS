@@ -1,1 +1,0 @@
-pdoc --output-dir documentation/ .\SDSPy\
