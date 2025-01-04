@@ -8,49 +8,23 @@ You can simply do :
 Or, you can download the .whl package and install it by hand 
 > pip install SDSpy[. . .].whl
 
-## Compatible devices
-Siglent are a bit weird on their programming guide, since they do not share a programming guide per device. They only a global file.
-Thus, it's difficult to identify any issues that are related to the software.
+## Basic usage :
+Here an extract of the example 1. Openning, how to use the lib 
 
-Nonetheless, the excluded devices seems not to be available anymore, so we can just consider them as obsolete.
-And, all of the compatibles devices seems to be issues from their latest range, and we can probably assume that all of the commands are the same, excepted for some parameters.
+> import SDSPy
+> 
+> Dev = SDSPy.PySDS("192.168.1.5")  
+> 
+> if Dev.DeviceOpenned != 1:
+>     print("Failed to open the device") 
+>     return -1
+> 
+> Dev.Channel[0].EnableTrace()            
+> Dev.Channel[0].SetCoupling("D")    
 
-Due to financial cost of theses devices, I can only test it with my own device, an Siglent SDS824X-HD. 
-Thus, this package can only be certified for THIS device, and ONLY THIS one. Others seems to respond to their standard command set, and thus shall be working flawlessly, but I can't test it.
+More advanced documentation is available on : 
 
-To any user that own one of the device, I'm open for your feedback / suggestions and so to verify my work / include new functions !
+## More advanced usages
+All of the documentation is available on GitHub, at this link : [Documentation.md](https://github.com/lheywang/SDSpy/blob/Main/documentation/Documentation.md)
 
-## How is the command set organized ?
-Their official programming guide which may be found linked into the source folder of the documentation explain all of this.
-They splitted the functions per category, so, I just did the same.
-
-There is one main class, and then composition with subclass. Each subclass is a category on the document, and is focused on ONE functionnality. Each function correspond to one, and only SCPI command.
-
-To this day, there is the followings functions :
-- acquisition control
-- channel control
-- communication settings (network configuration excluded)
-- cursor placement
-- serial bus decoding control
-- digital channel control
-- waveform export to BMP
-- maths operations
-- automatic measures control
-- autotest with a pass-fail condition
-- references control
-- triggering control
-- waveform export as a list of points
-
-For example, to configure the trigger of the device, you'll need to :
-> Device.trigger.SetThreshold(...)
-
-Generally, theses functions are name on the following chart :
-- Read / Set : Single SCPI functions
-- Configure / Get : Groupe of previous functions
-
-## Examples
-There is some examples on the source repo (linked in the .tar.gz file), if you need some more specific explanations !
-Take a look at them :
-- 1.Openning a device
-- 2.Configuring a device
-- 3.Reading from a device
+I'll describe everything you need to know !
