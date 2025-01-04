@@ -149,7 +149,7 @@ class PySDS:
             )
 
         # Then, initialize all of the subclass
-        
+
         self.Acquistion = SiglentAcquisition(self.__instr__, self)
         """SiglentAcquisition subclass. Check dedicated documentation :`SDSPy.acquisition.SiglentAcquisition`"""
 
@@ -194,7 +194,6 @@ class PySDS:
 
         self.Waveform = SiglentWaveform(self.__instr__, self)
         """SiglentWaveform subclass. Check dedicated documentation"""
-
 
         # For some older device, load additionnal commands that are depecrated in the newest models / firmwares
         if "ACAL" in self.__Config__["Specs"]["LegacyFunctions"]:
