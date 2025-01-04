@@ -2,35 +2,23 @@
 name = "SDSpy"
 version = "1.0.0a"
 description = "A Python package to interract with Siglent SDS Oscilloscpe series"
-authors = [
-    "lheywang <leonard.heywang@gmail.com>"
-    ]
-maintainers  = [
-    "lheywang <leonard.heywang@gmail.com>"
-    ]
+authors = ["lheywang <leonard.heywang@gmail.com>"]
+maintainers = ["lheywang <leonard.heywang@gmail.com>"]
 license = "GPL-3.0-or-later"
-readme = [  
-    "README.md"
-    ]
-repository  = "https://github.com/lheywang/pySDS"
-keywords = [
-    "PyVISA",
-    "SCPI",
-    "Siglent",
-    "SDS",
-    "Oscilloscope",
-    "Python"
-    ]
-include = [
-     {path = "config", format = "sdist"}
-]
+readme = ["README.md"]
+repository = "https://github.com/lheywang/pySDS"
+documentation = "https://github.com/lheywang/SDSpy/tree/Main/documentation/markdown"
+keywords = ["PyVISA", "SCPI", "Siglent", "SDS", "Oscilloscope", "Python"]
+include = [{ path = "config", format = "sdist" }]
+
+[tool.poetry.urls]
+"Changelogs" = "https://github.com/python-poetry/poetry/issues"
+"Issues" = "https://github.com/lheywang/SDSpy/issues"
+"Examples" = "https://github.com/lheywang/SDSpy/tree/Main/examples"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-pyvisa-py = "^0.7.2"
-black = "^24.10.0"
-numpy = "^2.2.0"
-matplotlib = "^3.10.0"
+pyvisa = "^1.14.1"
 
 
 [tool.poetry.group.test.dependencies]

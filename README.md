@@ -26,13 +26,23 @@ They splitted the functions per category, so, I just did the same.
 
 There is one main class, and then composition with subclass. Each subclass is a category on the document, and is focused on ONE functionnality. Each function correspond to one, and only SCPI command.
 
+To this day, there is the followings functions :
+- acquisition control
+- channel control
+- communication settings (network configuration excluded)
+- cursor placement
+- serial bus decoding control
+- digital channel control
+- waveform export to BMP
+- maths operations
+- automatic measures control
+- autotest with a pass-fail condition
+- references control
+- triggering control
+- waveform export as a list of points
+
 For example, to configure the trigger of the device, you'll need to :
 > Device.trigger.SetThreshold(...)
-
-And, in addition of that, I've included custom build function that group multiple functions calls.
-For example, you can do : 
-> Device.trigger.configure(...)
-This function will do all of the required calls to configure the trigger, without needing you to call a ton of functions.
 
 Generally, theses functions are name on the following chart :
 - Read / Set : Single SCPI functions
