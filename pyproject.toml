@@ -12,9 +12,10 @@ keywords = ["PyVISA", "SCPI", "Siglent", "SDS", "Oscilloscope", "Python"]
 include = [{ path = "config", format = "sdist" }]
 
 [tool.poetry.urls]
-"Changelogs" = "https://github.com/python-poetry/poetry/issues"
+"Changelogs" = "https://github.com/lheywang/SDSpy/blob/Main/Changelog.md"
 "Issues" = "https://github.com/lheywang/SDSpy/issues"
 "Examples" = "https://github.com/lheywang/SDSpy/tree/Main/examples"
+"Compatibility list" = "https://github.com/lheywang/SDSpy/blob/Main/documentation/Compatibility.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
