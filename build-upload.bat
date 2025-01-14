@@ -10,5 +10,5 @@ rem Building...
 poetry build
 
 rem This will need an API Key !
-twine upload dist/*
+python -m twine upload dist/*
 
