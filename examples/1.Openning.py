@@ -17,8 +17,7 @@ def main():
         print("Failed to open the device")  # Handle your errors here
         return -1
 
-    Name = Dev.Generics.ReadIDN()  # Perform any operations here
-    print(Name)  # ...
+    # ...
     # ...
 
     return  # Once done, only exit the function.

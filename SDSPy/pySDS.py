@@ -130,26 +130,20 @@ class PySDS:
         # Load the right configuration file
         # First, replace any space in the name with a "-" to ensure compatibility within different OS
         self.model = self.model.replace(" ", "-")
-
-        # Load the right configuration file without the SDS in front
-        self.__ConfigFile__ = self.model[3:] + ".toml"
-
         self.__Config__ = None
-        with open(f"config/{self.__ConfigFile__}", "rb") as f:
-            self.__Config__ = tomllib.load(f)
 
         # Create a generic class, for internal usage only
         self.__Generics__ = SCPIGenerics(self.__instr__, self)
 
-        # Now, initialize some parameters from the configuration file
+        # Now, initialize some parameters
         self.Channel = []
-        for index in range(self.__Config__["Specs"]["Channel"]):
+        for index in range(4):
             self.Channel.append(
                 SiglentChannel(
                     self.__instr__,
                     self,
                     f"C{index}",
-                    self.__Config__["Specs"]["impedance"],
+                    [50, 1_000_000],
                 )
             )
 
@@ -171,16 +165,6 @@ class PySDS:
         self.Trigger = SiglentTrigger(self.__instr__, self)
         self.Timebase = SiglentTimebase(self.__instr__, self)
         self.Waveform = SiglentWaveform(self.__instr__, self)
-
-        # For some older device, load additionnal commands that are depecrated in the newest models / firmwares
-        if "ACAL" in self.__Config__["Specs"]["LegacyFunctions"]:
-            self.Calibration = ACAL(self.__instr__, self)
-
-        if "DATE" in self.__Config__["Specs"]["LegacyFunctions"]:
-            self.Date = DATE(self.__instr__, self)
-
-        if "COUNTER" in self.__Config__["Specs"]["LegacyFunctions"]:
-            self.Counter = COUNTER(self.__instr__, self)
 
         self.DeviceOpenned = 1
         return
