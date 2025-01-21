@@ -22,7 +22,6 @@ from . import SiglentChannel
 from . import SiglentCommunication
 from . import SiglentCursor
 from . import SiglentDecode
-from . import ACAL, DATE, COUNTER
 from . import SiglentDigital
 from . import SiglentScreen
 from . import SiglentFiles
@@ -142,7 +141,7 @@ class PySDS:
                 SiglentChannel(
                     self.__instr__,
                     self,
-                    f"C{index}",
+                    f"C{index + 1}",
                     [50, 1_000_000],
                 )
             )
@@ -439,10 +438,47 @@ class PySDS:
     
     """
     # =============================================================================================================================================
-
     def GetAllErrors(self, toprint=False):
         """
         PySDS [GetAllErrors] :  Read the device errors, and until at least one error exist, continue to read it.
+                                For each errors, it will be printed in console and returned on a list, with it's lengh in first position.
+
+                                This function also trigger a reading of the status of the device to detect if value where adapted or cancelled.
+
+            Arguments :
+                toprint : (unused) Shall we print the decoded output on the console ? Default to false.
+
+            Returns :
+                List :
+                    Index 0 :       Number of errors that occured
+                    Index 1 - n :   Device errors codes
+        """
+        stop = False
+        codes = []
+        errors = []
+
+        while stop == False:
+            ret = self.__instr__.query("SYST:ERR?").strip().split(",")
+            if int(ret[0]) == 0:
+                stop = True
+                break
+                
+            else:
+                codes.append(int(ret[0]))
+                errors.append(ret[1][1:-1])
+
+        if len(codes) != 0:
+            for index, code in enumerate(codes):
+                print(f"Error {index:10} : {code:10} : {errors[index]}")
+
+        return [len(codes), codes]
+
+
+    def GetAllErrors_old(self, toprint=False):
+        """
+        DEPRECATED
+
+        PySDS [GetAllErrors_old] :  Read the device errors, and until at least one error exist, continue to read it.
                                 For each errors, it will be printed in console and returned on a list, with it's lengh in first position.
 
                                 This function also trigger a reading of the status of the device to detect if value where adapted or cancelled.
@@ -533,17 +569,17 @@ class PySDS:
         # When the loop exist, we return the list
         Retval = self.GetDeviceStatus(toprint)
 
-        if Retval != 0:
-            Errors[0] += 1
-
-            tmp = 0
-            power = 0
-            for bit in Retval:
+        tmp = 0
+        power = 0
+        for bit in Retval:
+            if bit != 0 :
+                Errors[0] += 1
                 tmp += 2**power * bit
-                power += 1
+            power += 1
 
+        if tmp != 0 :
             Errors.append(tmp + 1000)
-            # Increment of 1000 to signify an error in the MSB register
+        # Increment of 1000 to signify an error in the MSB register
 
         return Errors
 
@@ -568,8 +604,6 @@ class PySDS:
         for power in range(16):
             Bits.append((Ret & pow(2, power)) >> power)
 
-        print("Device status :")
-        print("Bit | Status | Message")
         for index, bit in enumerate(Bits):
             match index:
                 case 0:
@@ -608,6 +642,8 @@ class PySDS:
                     message = "Reserved for future use"
 
             if toprint == True:
+                print("Device status :")
+                print("Bit | Status | Message")
                 if bit == 1:
                     print(f" {index:2} |  {bit:5} | {message}")
                 else:

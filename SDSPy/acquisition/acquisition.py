@@ -158,7 +158,7 @@ class SiglentAcquisition(SiglentBase):
             Returns :
                 String : Device response
         """
-        return self.__instr__.query("SARA?").strip().split(" ")[-1]
+        return float(self.__instr__.query("SARA?").strip().split(" ")[-1][:-4])
 
     def GetSampleNumber(self):
         """
@@ -170,7 +170,7 @@ class SiglentAcquisition(SiglentBase):
             Returns :
                 String : Device response
         """
-        return self.__instr__.query("SANU?").strip().split(" ")[-1]
+        return float(self.__instr__.query("SANU?").strip().split(" ")[-1][:-3])
 
     def SetInterpolationMethod(self, Method):
         """

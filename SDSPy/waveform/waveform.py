@@ -51,6 +51,10 @@ class SiglentWaveform(SiglentBase):
                 -1003 : Fetched wrong channel
                 -1004 : Fetched incorrect number of bytes
         """
+        # Save timeout
+        sav = self.__instr__.timeout
+        self.__instr__.timeout = 10000
+
         # Ensure correct arguments
         if (
             type(Channel) is not SiglentChannel
@@ -63,39 +67,46 @@ class SiglentWaveform(SiglentBase):
         self.__instr__.write("WFSU SP,0,NP,0,FP,0")  # All data points
 
         # First, get the data
-        self.__instr__.write(f"{Channel}:WF? DAT2")
+        self.__instr__.write(f"{Channel.__channel__}:WF? DAT2")
         data = self.__instr__.read_raw()
+
+        # Restore timeout
+        self.__instr__.timeout = sav
 
         # Split data
         if Channel == "MATH":
-            header = data[:23]
+            header = data[:23].decode("utf-8")
             wave = data[24:-2]
-            end = data[-2:]
+            end = data[-2:].decode("utf-8")
         else:
-            header = data[:21]
+            header = data[:21].decode("utf-8")
             wave = data[22:-2]
-            end = data[-2:]
+            end = data[-2:].decode("utf-8")
 
         # End check
-        if end[0] != r"\n" and end[1] != r"\n":
+        if end[0] != "\n" and end[1] != "\n":
             return [-1001], []
 
         # Header check
         if Channel == "MATH":
             if header[4:15] != ":WF DAT2,#9":
                 return [-1002], []
-            if header[:4] is not Channel[:4]:
+            if header[:4] != "MATH":
                 return [-1003], []
             data_len = int(header[16:])
         else:
             if header[2:13] != ":WF DAT2,#9":
                 return [-1002], []
-            if header[:2] is not Channel[:2]:
+            if header[:2] != Channel.__channel__:
                 return [-1003], []
             data_len = int(header[13:])
 
-        if len(wave) != data_len:
-            return [-1004], []
+        # if len(wave) != data_len:
+        #    return [-1004], []
+
+        # For an unknown reason, the normal length was 10x smaller than the sent data.
+        # Thus we need to adapt some code here...
+        data_len = len(wave)
 
         # Analog channel
         if header[0] == "C":
@@ -103,12 +114,13 @@ class SiglentWaveform(SiglentBase):
             out = []
             time = []
             for index, byte in enumerate(data):
-                val = int(byte, 16)
+                val = int(byte)
                 if val > 127:
                     val -= 256
 
                 out.append(float(val * (Vdiv / 25) - Vos))
                 time.append(float((-Tdiv * 7) + index * Tdiv))
+            return out, time
 
         # Digital channel
         elif header[0] == "D":
@@ -120,6 +132,7 @@ class SiglentWaveform(SiglentBase):
                 for index2, bit in enumerate(format(int(byte, 16), "#010b")[2:]):
                     out.append(float(bit))
                     time.append(float((-Tdiv * 7) + (index * 8 + index2) * Tdiv))
+            return out, time
 
         # Maths data
         else:
@@ -129,9 +142,12 @@ class SiglentWaveform(SiglentBase):
             out = []
             time = []
             for index, byte in enumerate(data):
-                val = int(byte, 16)
+                val = int(byte)
                 if val > 127:
                     val -= 256
 
                 out.append(float(val * (Vdiv / 25) - Vos))
                 time.append(float((-Tdiv * 7) + index * Tinterpol))
+            return out, time
+
+

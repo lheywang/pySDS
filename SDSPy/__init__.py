@@ -5,7 +5,6 @@ from .channel import SiglentChannel
 from .communication import SiglentCommunication
 from .cursor import SiglentCursor
 from .decode import SiglentDecode
-from .deprecated_functions import ACAL, DATE, COUNTER
 from .digital import SiglentDigital
 from .display import SiglentScreen
 from .Files import SiglentFiles

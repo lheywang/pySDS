@@ -113,7 +113,7 @@ class SiglentTrigger(SiglentBase):
         if Mode not in ["AC", "DC", "HFREJ", "LFREJ"]:
             return [1, -2]  # Emulate the standard return type
 
-        self.__instr__.write(f"{Channel}:TRCP {Mode}")
+        self.__instr__.write(f"{Channel.__channel__}:TRCP {Mode}")
         return self.__baseclass__.GetAllErrors()
 
     #
@@ -162,7 +162,7 @@ class SiglentTrigger(SiglentBase):
             Returns :
                 self.GetAllErrors() : List of errors
         """
-        self.__instr__.write(f"{Channel}:TRLV {Value}")
+        self.__instr__.write(f"{Channel.__channel__}:TRLV {Value}")
         return self.__baseclass__.GetAllErrors()
 
     def SetLevel2(self, Channel, Value: float):
@@ -178,7 +178,7 @@ class SiglentTrigger(SiglentBase):
             Returns :
                 self.GetAllErrors() : List of errors
         """
-        self.__instr__.write(f"{Channel}:TRLV2 {Value}")
+        self.__instr__.write(f"{Channel.__channel__}:TRLV2 {Value}")
         return self.__baseclass__.GetAllErrors()
 
     #
@@ -271,7 +271,7 @@ class SiglentTrigger(SiglentBase):
         if Slope not in ["POS", "NEG", "WINDOWS"]:
             return [1, -2]  # Emulate the standard return type
 
-        self.__instr__.write(f"{Channel}:TRSL {Slope}")
+        self.__instr__.write(f"{Channel.__channel__}:TRSL {Slope}")
         return self.__baseclass__.GetAllErrors()
 
     def GetSlope(self, Channel):
@@ -287,7 +287,7 @@ class SiglentTrigger(SiglentBase):
         if Channel not in ["C1", "C2", "C3", "C4", "EX", "EX5", "LINE"]:
             return [1, -1]  # Emulate the standard return type
 
-        return self.__instr__.query(f"{Channel}:TRSL?").strip().split(" ")[-1][:3]
+        return self.__instr__.query(f"{Channel.__channel__}:TRSL?").strip().split(" ")[-1][:3]
 
     #
     #   WINDOW

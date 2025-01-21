@@ -62,7 +62,7 @@ class SiglentMaths(SiglentBase):
             .split(";")
         )
         for elem in Eq:
-            if elem not in ["+", "-", "*", "/", "FFT", "INTG", "DIFF", "SQRT"]:
+            if elem not in ["+", "-", "*", "/", "FFT", "INTG", "DIFF", "SQRT", ""]:
                 return -1
 
         self.__instr__.write(f"DEFINE EQN,'{Equation}'")
