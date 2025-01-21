@@ -7,6 +7,7 @@
 # ============================================================================================================
 
 import SDSPy
+import time
 
 
 def main():
@@ -17,14 +18,22 @@ def main():
         print("Failed to open the device")  # Handle your errors here
         return -1
 
-    Dev.Channel[0].DisableTrace()  # Enable drawing of the trace
+    Dev.Channel[0].EnableTrace()  # Enable drawing of the trace
     Dev.Channel[0].SetCoupling("D")  # Configure the channel to DC
-    # Here we don't care about display config since the trace is hidden
 
-    Dev.Trigger.SetLevel1(
-        Dev.Channel[0], 0.5
-    )  # Here we configure the trigger on Channel0 at 500mV
-    Dev.Trigger.SetSlope(Dev.Channel[0], "POS")  # Setting rising edges
+    Dev.Channel[1].EnableTrace()  # Enable drawing of the trace
+    Dev.Channel[1].SetCoupling("D")  # Configure the channel to DC
+
+    Dev.Measure.SetMeasure("MEAN", Dev.Channel[0]) # Configure a measure
+    Dev.Measure.SetMeasure("PKPK", Dev.Channel[0]) # Configure another measure
+    Dev.Measure.SetDelayMeasure("PHA", Dev.Channel[0], Dev.Channel[1]) # Configure a measure from the time domain
+
+    print(Dev.Measure.GetMeasure("MEAN", Dev.Channel[0])) # Read one measure
+
+    # Dev.Measure.EnableMeasureStatistics() # Set statistics
+    # 
+    # time.sleep(1)
+    # print(Dev.Measure.GetStatsMeasure(1)) # Get stats for the first installed measure, here "PKPK" --> The order is different than the one configured !
 
     return  # Once done, only exit the function.
     # All of the nasty stuff is automatically handled by PyVISA, the package used to communicate with the device.

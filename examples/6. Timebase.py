@@ -21,10 +21,7 @@ def main():
     Dev.Channel[0].SetCoupling("D")  # Configure the channel to DC
     # Here we don't care about display config since the trace is hidden
 
-    Dev.Trigger.SetLevel1(
-        Dev.Channel[0], 0.5
-    )  # Here we configure the trigger on Channel0 at 500mV
-    Dev.Trigger.SetSlope(Dev.Channel[0], "POS")  # Setting rising edges
+    Dev.Timebase.SetTimeDiv("10MS") # Configure the timebase of the device
 
     return  # Once done, only exit the function.
     # All of the nasty stuff is automatically handled by PyVISA, the package used to communicate with the device.

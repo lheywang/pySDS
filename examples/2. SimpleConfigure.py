@@ -10,7 +10,7 @@ import SDSPy
 
 
 def main():
-    Dev = SDSPy.PySDS("192.168.1.5")  # Define your instrument IP here
+    Dev = SDSPy.PySDS("172.16.1.2")  # Define your instrument IP here
     # Check return value AND / OR console messages for errors
 
     if Dev.DeviceOpenned != 1:
@@ -18,11 +18,12 @@ def main():
         return -1
 
     Dev.Channel[0].EnableTrace()  # Enable drawing of the trace
+    Dev.Channel[0].SetAttenuation(10) # Probe in 10x
+    Dev.Channel[0].EnableBandwithFilter()
     Dev.Channel[0].SetCoupling("D")  # Configure the channel to DC
-    Dev.Channel[0].SetOffset(1)  # Configure offset on display
-    Dev.Channel[0].SetTraceDIV(
-        0.5
-    )  # Configure size of drawing, here 500mV per division.
+    # Configure size of drawing, here 500mV per division.
+    Dev.Channel[0].SetTraceDIV(2) 
+    Dev.Channel[0].SetOffset(1)  # Configure offset on display (WARNING : It depend on the trace div !)
 
     return  # Once done, only exit the function.
     # All of the nasty stuff is automatically handled by PyVISA, the package used to communicate with the device.
