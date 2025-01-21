@@ -155,9 +155,9 @@ class SiglentCursor(SiglentBase):
 
         match ret[0]:
             case "HREL":
-                return [float(ret[1]), float(ret[2]), float(ret[3]), float(ret[4])]
+                return [float(ret[1][:-1]), float(ret[2][:-1]), float(ret[3][:-1]), float(ret[4][:-1])]
             case "VREL":
-                return [float(ret[1]), 0.00, float(ret[2]), float(ret[3])]
+                return [float(ret[1][:-1]), 0.00, float(ret[2][:-1]), float(ret[3][:-1])]
             case _:  # default case
                 return [-1] * 4
         return [-2, -2, -2, -2]  # shouldn't get here, and if we do, good luck !

@@ -11,29 +11,29 @@ import ipaddress
 import tomllib
 from datetime import datetime
 from warnings import warn
+from importlib import resources
 
 # Poetry managed lbraries
 import pyvisa  # type: ignore
 
 # Others files
-from .acquisition import SiglentAcquisition
-from .channel import SiglentChannel
-from .communication import SiglentCommunication
-from .cursor import SiglentCursor
-from .decode import SiglentDecode
-from .deprecated_functions import ACAL, DATE, COUNTER
-from .digital import SiglentDigital
-from .display import SiglentScreen
-from .Files import SiglentFiles
-from .generics import SCPIGenerics
-from .history import SiglentHistory
-from .maths import SiglentMaths
-from .measure import SiglentMeasure
-from .passfail import SiglentPassFail
-from .references import SiglentReference
-from .timebase import SiglentTimebase
-from .trigger import SiglentTrigger
-from .waveform import SiglentWaveform
+from . import SiglentAcquisition
+from . import SiglentChannel
+from . import SiglentCommunication
+from . import SiglentCursor
+from . import SiglentDecode
+from . import SiglentDigital
+from . import SiglentScreen
+from . import SiglentFiles
+from . import SCPIGenerics
+from . import SiglentHistory
+from . import SiglentMaths
+from . import SiglentMeasure
+from . import SiglentPassFail
+from . import SiglentReference
+from . import SiglentTimebase
+from . import SiglentTrigger
+from . import SiglentWaveform
 
 
 class PySDS:
@@ -102,10 +102,11 @@ class PySDS:
         try:
             self.__rm__ = pyvisa.ResourceManager()
             self.__instr__ = self.__rm__.open_resource(f"TCPIP0::{IP}::inst0::INSTR")
-        except:
+        except Exception as e:
             print(
                 "     [ PySDS ] [ Init ] : Unable to access to the device. Check if the IP is right, or if you can ping it !"
             )
+            print(f"                           Error code : {e}")
             self.DeviceOpenned = 0
             return
 
@@ -128,23 +129,20 @@ class PySDS:
         # Load the right configuration file
         # First, replace any space in the name with a "-" to ensure compatibility within different OS
         self.model = self.model.replace(" ", "-")
-
-        # Load the right configuration file without the SDS in front
-        self.__ConfigFile__ = self.model[3:] + ".toml"
-
         self.__Config__ = None
-        with open(f"config/{self.__ConfigFile__}", "rb") as f:
-            self.__Config__ = tomllib.load(f)
 
         # Create a generic class, for internal usage only
         self.__Generics__ = SCPIGenerics(self.__instr__, self)
 
-        # Now, initialize some parameters from the configuration file
+        # Now, initialize some parameters
         self.Channel = []
-        for index in range(self.__Config__["Specs"]["Channel"]):
+        for index in range(4):
             self.Channel.append(
                 SiglentChannel(
-                    self.__instr__, self, f"C{index}", self.__Config__["impedance"]
+                    self.__instr__,
+                    self,
+                    f"C{index + 1}",
+                    [50, 1_000_000],
                 )
             )
 
@@ -166,35 +164,6 @@ class PySDS:
         self.Trigger = SiglentTrigger(self.__instr__, self)
         self.Timebase = SiglentTimebase(self.__instr__, self)
         self.Waveform = SiglentWaveform(self.__instr__, self)
-
-
-        # For some older device, load additionnal commands that are depecrated in the newest models / firmwares
-        if "ACAL" in self.__Config__["Specs"]["LegacyFunctions"]:
-            self.Calibration = ACAL(self.__instr__, self)
-
-        if "DATE" in self.__Config__["Specs"]["LegacyFunctions"]:
-            self.Date = DATE(self.__instr__, self)
-
-        if "COUNTER" in self.__Config__["Specs"]["LegacyFunctions"]:
-            self.Counter = COUNTER(self.__instr__, self)
-
-        # Then, load default settings by sending request to get the actual state of the device
-
-        # Check for support of depecrated commands !
-        # ACAL (SDS2000X and SDS1000CFL)
-        # AAUTS (Up to SDS1000X)
-        # COUNTER (SDS1000 non SPO)
-        # CSV SAVE (All but different formats...)
-        # DATE (SDS2000X and SDS1000CFL)
-        # FFTZOOM (Up to SDS1000X)
-        # FILTER (SDS1000 non SPO)
-        # FILT SET (SDS1000 non SPO)
-        # PEAK DETECT (Up to SDS1000X)
-        # PFCT (Up to SDS1000X)
-        # PERS (Up to SDS1000X)
-        # RECALL (Up to SDS1000X)
-        # REFSET (Up to SDS1000X)
-        # VPOS (Up to SDS1000X)
 
         self.DeviceOpenned = 1
         return
@@ -469,8 +438,7 @@ class PySDS:
     
     """
     # =============================================================================================================================================
-
-    def GetAllErrors(self, print=False):
+    def GetAllErrors(self, toprint=False):
         """
         PySDS [GetAllErrors] :  Read the device errors, and until at least one error exist, continue to read it.
                                 For each errors, it will be printed in console and returned on a list, with it's lengh in first position.
@@ -478,7 +446,45 @@ class PySDS:
                                 This function also trigger a reading of the status of the device to detect if value where adapted or cancelled.
 
             Arguments :
-                print : Shall we print the decoded output on the console ? Default to false.
+                toprint : (unused) Shall we print the decoded output on the console ? Default to false.
+
+            Returns :
+                List :
+                    Index 0 :       Number of errors that occured
+                    Index 1 - n :   Device errors codes
+        """
+        stop = False
+        codes = []
+        errors = []
+
+        while stop == False:
+            ret = self.__instr__.query("SYST:ERR?").strip().split(",")
+            if int(ret[0]) == 0:
+                stop = True
+                break
+                
+            else:
+                codes.append(int(ret[0]))
+                errors.append(ret[1][1:-1])
+
+        if len(codes) != 0:
+            for index, code in enumerate(codes):
+                print(f"Error {index:10} : {code:10} : {errors[index]}")
+
+        return [len(codes), codes]
+
+
+    def GetAllErrors_old(self, toprint=False):
+        """
+        DEPRECATED
+
+        PySDS [GetAllErrors_old] :  Read the device errors, and until at least one error exist, continue to read it.
+                                For each errors, it will be printed in console and returned on a list, with it's lengh in first position.
+
+                                This function also trigger a reading of the status of the device to detect if value where adapted or cancelled.
+
+            Arguments :
+                toprint : Shall we print the decoded output on the console ? Default to false.
 
             Returns :
                 List :
@@ -487,7 +493,8 @@ class PySDS:
         """
 
         FetchNextError = True
-        Errors = [0]
+        Errors = []
+        Errors.append(0)
 
         # For each loop, we ask the device an error
         # If not 0, then we parse it and add it to the list
@@ -503,7 +510,7 @@ class PySDS:
                 Errors[0] += 1
                 Errors.append(int(Ret))
 
-                if print == True:
+                if toprint == True:
                     # Theses errors messages came from the Siglent SCPI documentation, and are only here to help the developper to get the error easily !
                     match Ret:
                         case 21:
@@ -560,23 +567,29 @@ class PySDS:
                             )
 
         # When the loop exist, we return the list
-        Retval = self.GetDeviceStatus(print)
+        Retval = self.GetDeviceStatus(toprint)
 
-        if Retval != 0:
-            Errors[0] += 1
-            Errors.append(
-                Retval + 1000
-            )  # Increment of 1000 to signify an error in the MSB register
+        tmp = 0
+        power = 0
+        for bit in Retval:
+            if bit != 0 :
+                Errors[0] += 1
+                tmp += 2**power * bit
+            power += 1
+
+        if tmp != 0 :
+            Errors.append(tmp + 1000)
+        # Increment of 1000 to signify an error in the MSB register
 
         return Errors
 
-    def GetDeviceStatus(self, print=False):
+    def GetDeviceStatus(self, toprint=False):
         """
         PySDS [GetDeviceStatus] :   Get the device status, and parse it to make it easier to use for developpers or users.
                                     Print each status bit
 
             Argument :
-                print : Shall we print the decoded output on the console ? Default to false.
+                toprint : Shall we print the decoded output on the console ? Default to false.
 
             Returns :
                 List of lenght 16, for each bit
@@ -591,8 +604,6 @@ class PySDS:
         for power in range(16):
             Bits.append((Ret & pow(2, power)) >> power)
 
-        print("Device status :")
-        print("Bit | Status | Message")
         for index, bit in enumerate(Bits):
             match index:
                 case 0:
@@ -630,7 +641,9 @@ class PySDS:
                 case 15:
                     message = "Reserved for future use"
 
-            if print == True:
+            if toprint == True:
+                print("Device status :")
+                print("Bit | Status | Message")
                 if bit == 1:
                     print(f" {index:2} |  {bit:5} | {message}")
                 else:
@@ -654,9 +667,9 @@ class PySDS:
         Ret = self.__Generics__.ReadOPT()
         return Ret.split(" ")[-1].split(",")
 
-    def GetDeviceStatus(self):
+    def GetDeviceStatus2(self):
         """
-        PySDS [GetDeviceStatus] :   Read the device status, and parse it to be easier for the user to read !
+        PySDS [GetDeviceStatus2] :  Read the device status, and parse it to be easier for the user to read !
 
             Arguments :
                 None

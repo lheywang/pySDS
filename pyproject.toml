@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "SDSpy"
-version = "1.0.0b"
+version = "1.1.0"
 description = "A Python package to interract with Siglent SDS Oscilloscpe series"
 authors = ["lheywang <leonard.heywang@gmail.com>"]
 maintainers = ["lheywang <leonard.heywang@gmail.com>"]
@@ -9,7 +9,6 @@ readme = ["README.md"]
 repository = "https://github.com/lheywang/PySDG"
 documentation = "https://github.com/lheywang/SDSpy/tree/Main/documentation/markdown"
 keywords = ["PyVISA", "SCPI", "Siglent", "SDS", "Oscilloscope", "Python"]
-include = [{ path = "config", format = "sdist" }]
 
 [tool.poetry.urls]
 "Changelogs" = "https://github.com/lheywang/SDSpy/blob/Main/Changelog.md"
@@ -20,7 +19,6 @@ include = [{ path = "config", format = "sdist" }]
 [tool.poetry.dependencies]
 python = "^3.12"
 pyvisa = "^1.14.1"
-
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.4"

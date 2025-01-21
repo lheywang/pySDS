@@ -21,10 +21,9 @@ def main():
     Dev.Channel[0].SetCoupling("D")  # Configure the channel to DC
     # Here we don't care about display config since the trace is hidden
 
-    Dev.Trigger.SetLevel1(
-        Dev.Channel[0], 0.5
-    )  # Here we configure the trigger on Channel0 at 500mV
-    Dev.Trigger.SetSlope(Dev.Channel[0], "POS")  # Setting rising edges
+    # This function return extremely large arrays ! 
+    # I recommend to decimate them, or to treat them with specific tools (cudf, np, pandas...)
+    Val, Time = Dev.Waveform.GetWaveformData(Dev.Channel[0], 2, 1, 0.01, 100000000)
 
     return  # Once done, only exit the function.
     # All of the nasty stuff is automatically handled by PyVISA, the package used to communicate with the device.

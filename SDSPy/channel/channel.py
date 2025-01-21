@@ -155,7 +155,7 @@ class SiglentChannel(SiglentBase):
                 self.GetAllErrors()
         """
 
-        self.__instr__.write(f"{self.__channel__}:OFST {Offset}V")
+        self.__instr__.write(f"{self.__channel__}:OFST {Offset}")
         return self.__baseclass__.GetAllErrors()
 
     def SetSkew(self, Skew: int):
@@ -199,7 +199,7 @@ class SiglentChannel(SiglentBase):
             Return :
                 self.GetAllErrors()
         """
-        self.__instr__.query(f"{self.__channel__}:TRA OFF")
+        self.__instr__.write(f"{self.__channel__}:TRA OFF")
         return self.__baseclass__.GetAllErrors()
 
     def SetTraceUnit(self, Unit: str):
@@ -213,7 +213,7 @@ class SiglentChannel(SiglentBase):
                 self.GetAllErrors()
         """
 
-        self.__instr__.query(f"{self.__channel__}:UNIT {Unit}")
+        self.__instr__.write(f"{self.__channel__}:UNIT {Unit}")
         return self.__baseclass__.GetAllErrors()
 
     def SetTraceDIV(self, Div: float):
@@ -231,7 +231,7 @@ class SiglentChannel(SiglentBase):
         if Div < 0.000_5 or Div > 10:
             return -1
 
-        self.__instr__.query(f"{self.__channel__}:VDIV {Div}")
+        self.__instr__.write(f"{self.__channel__}:VDIV {Div}")
         return self.__baseclass__.GetAllErrors()
 
     def EnableTraceInvert(self):
@@ -244,7 +244,7 @@ class SiglentChannel(SiglentBase):
             Returns :
                 self.GetAllErrors()
         """
-        self.__instr__.query(f"{self.__channel__}:INVS ON")
+        self.__instr__.write(f"{self.__channel__}:INVS ON")
         return self.__baseclass__.GetAllErrors()
 
     def DisableTraceInvert(self):
@@ -257,5 +257,5 @@ class SiglentChannel(SiglentBase):
             Returns :
                 self.GetAllErrors()
         """
-        self.__instr__.query(f"{self.__channel__}:INVS OFF")
+        self.__instr__.write(f"{self.__channel__}:INVS OFF")
         return self.__baseclass__.GetAllErrors()
